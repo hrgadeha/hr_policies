@@ -1,0 +1,54 @@
+{
+ "creation": "2020-07-09 20:40:33.127260",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "bonus_applicable_after_month",
+  "column_break_2",
+  "labour_referral_bonus",
+  "staff_referral_bonus"
+ ],
+ "fields": [
+  {
+   "fieldname": "bonus_applicable_after_month",
+   "fieldtype": "Int",
+   "label": "Bonus Applicable After (Month)"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "labour_referral_bonus",
+   "fieldtype": "Currency",
+   "label": "Labour Referral Bonus"
+  },
+  {
+   "fieldname": "staff_referral_bonus",
+   "fieldtype": "Currency",
+   "label": "Staff Referral Bonus"
+  }
+ ],
+ "issingle": 1,
+ "modified": "2020-07-09 20:59:10.757739",
+ "modified_by": "Administrator",
+ "module": "Hr Policies",
+ "name": "Referral Bonus Policies",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

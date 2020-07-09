@@ -1,0 +1,37 @@
+{
+ "creation": "2020-07-09 20:44:01.250939",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "salary_should_be_equal_or_higher_then"
+ ],
+ "fields": [
+  {
+   "fieldname": "salary_should_be_equal_or_higher_then",
+   "fieldtype": "Float",
+   "label": "Salary Should Be Equal or Higher Then"
+  }
+ ],
+ "issingle": 1,
+ "modified": "2020-07-09 20:44:01.250939",
+ "modified_by": "Administrator",
+ "module": "Hr Policies",
+ "name": "Advance Salary Policies",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

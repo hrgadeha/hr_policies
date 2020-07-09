@@ -4,17 +4,29 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "loan_eligibility_after"
+  "loan_eligibility_after",
+  "loan_repayment_period",
+  "no_of_guarantor_need"
  ],
  "fields": [
   {
    "fieldname": "loan_eligibility_after",
    "fieldtype": "Int",
    "label": "Loan Eligibility After (Month) "
+  },
+  {
+   "fieldname": "loan_repayment_period",
+   "fieldtype": "Int",
+   "label": "Loan Repayment Period"
+  },
+  {
+   "fieldname": "no_of_guarantor_need",
+   "fieldtype": "Int",
+   "label": "No of Guarantor need"
   }
  ],
  "issingle": 1,
- "modified": "2020-07-09 20:36:56.492544",
+ "modified": "2020-07-09 20:55:29.101722",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Loan Policies",
