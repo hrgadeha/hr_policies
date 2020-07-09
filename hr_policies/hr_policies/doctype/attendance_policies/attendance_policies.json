@@ -1,0 +1,37 @@
+{
+ "creation": "2020-07-09 20:35:53.743330",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "late_allowance_for"
+ ],
+ "fields": [
+  {
+   "fieldname": "late_allowance_for",
+   "fieldtype": "Int",
+   "label": "Late Allowance For (Minutes)"
+  }
+ ],
+ "issingle": 1,
+ "modified": "2020-07-09 20:36:11.610478",
+ "modified_by": "Administrator",
+ "module": "Hr Policies",
+ "name": "Attendance Policies",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
