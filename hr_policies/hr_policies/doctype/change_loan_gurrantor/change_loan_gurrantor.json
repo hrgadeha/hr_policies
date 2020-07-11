@@ -1,0 +1,64 @@
+{
+ "autoname": "CHANGL.####",
+ "creation": "2020-07-11 17:35:46.450480",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "loan_application",
+  "new_gurrantor",
+  "old_gurrantor",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "new_gurrantor",
+   "fieldtype": "Link",
+   "label": "New Gurrantor",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "old_gurrantor",
+   "fieldtype": "Link",
+   "label": "Old Gurrantor",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "loan_application",
+   "fieldtype": "Link",
+   "label": "Loan Application",
+   "options": "Loan Application"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Change Loan Gurrantor",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "modified": "2020-07-12 02:05:09.449529",
+ "modified_by": "Administrator",
+ "module": "Hr Policies",
+ "name": "Change Loan Gurrantor",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

@@ -35,5 +35,18 @@ def get_data():
 					"onboard": 1
 				}
 			]
-		}
+		},
+		{
+                        "label": _("Approval"),
+                        "items": [
+                                {
+                                        "type": "doctype",
+                                        "name": "Gate Pass",
+                                        "label": "Gate Pass",
+                                        "description": _("Gate Pass"),
+                                        "onboard": 1
+                                }
+                        ]
+                }
+
 ]

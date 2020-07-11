@@ -1,0 +1,39 @@
+{
+ "autoname": "GLOAN.####",
+ "creation": "2020-07-11 19:17:49.069952",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "status"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "default": "Active",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "\nActive\nDeactive",
+   "read_only": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2020-07-12 02:22:16.776439",
+ "modified_by": "Administrator",
+ "module": "Hr Policies",
+ "name": "Loan Guarantor",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
