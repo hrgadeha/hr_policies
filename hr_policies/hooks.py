@@ -26,7 +26,7 @@ app_license = "MIT"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {"Loan Application" : "public/js/loan_application.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -84,6 +84,27 @@ doc_events = {
 		"validate": "hr_policies.custom_validate.validate_guarantor"
 	}
 }
+
+fixtures = [
+    {
+        "doctype": "Custom Field",
+        "filters": [
+            [
+                "name",
+                "in",
+                [
+			"Gate Pass-workflow_state",
+			"Loan Application-workflow_state",
+			"Loan Application-gross_salary",
+			"Loan Application-loan_guarantor",
+			"Loan Application-guarantor_details",
+			"Loan Application-eligible_amount"
+		]
+	   ]
+	]
+    }
+]
+
 
 # Scheduled Tasks
 # ---------------

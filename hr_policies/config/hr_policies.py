@@ -4,15 +4,53 @@ from frappe import _
 def get_data():
 	return [
 		{
-			"label": _("Policies"),
-			"items": [
-				{
+                        "label": _("Loan Management"),
+                        "items": [
+                                {
+                                        "type": "doctype",
+                                        "name": "Loan Application",
+                                        "label": "Loan Application",
+                                        "description": _("Loan Application"),
+                                        "onboard": 1
+                                },
+                                {
+                                        "type": "doctype",
+                                        "name": "Loan",
+                                        "label": "Loan",
+                                        "description": _("Loan"),
+                                        "onboard": 1
+                                },
+                                {
+                                        "type": "doctype",
+                                        "name": "Loan Type",
+                                        "label": "Loan Type",
+                                        "description": _("Loan Type"),
+                                        "onboard": 1
+                                }
+                        ]
+                },
+		{
+                        "label": _("Loan Setting"),
+                        "items": [
+                                {
+                                        "type": "doctype",
+                                        "name": "Change Loan Guarantor",
+                                        "label": "Change Loan Guarantor",
+                                        "description": _("Change Loan Guarantor"),
+                                        "onboard": 1
+                                },
+                                {
                                         "type": "doctype",
                                         "name": "Loan Policies",
                                         "label": "Loan Policies",
                                         "description": _("Loan Policies"),
                                         "onboard": 1
-                                },
+                                }
+                        ]
+                },
+		{
+			"label": _("Policies"),
+			"items": [
 				{
                                         "type": "doctype",
                                         "name": "Attendance Policies",

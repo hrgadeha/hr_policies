@@ -75,7 +75,7 @@ def get_guarantor_salary(employee,name=None):
 	guarantors = frappe.db.sql("""SELECT lp.name
 FROM `tabLoan Application` AS lp
 INNER JOIN `tabLoan Guarantor` AS lg ON lp.name=lg.parent
-WHERE lp.docstatus=1 AND lg.status='Active' 
+WHERE lp.docstatus<>2 AND lg.status='Active' 
   AND lg.employee=%s And lp.name<>%s	
 	""",(employee,name),as_dict=1)
 	max_as_guarantor_in_loan = frappe.db.get_value("Loan Policies","Loan Policies","max_as_guarantor_in_loan") or 2
