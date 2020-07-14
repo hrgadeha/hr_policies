@@ -1,0 +1,44 @@
+{
+ "creation": "2020-07-14 11:17:30.062708",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "no_of_gate_pass_allowed_for_personal_work",
+  "personal_gate_pass_allowance_time"
+ ],
+ "fields": [
+  {
+   "fieldname": "no_of_gate_pass_allowed_for_personal_work",
+   "fieldtype": "Int",
+   "label": "No of Gate Pass Allowed For Personal Work (Monthly)"
+  },
+  {
+   "fieldname": "personal_gate_pass_allowance_time",
+   "fieldtype": "Int",
+   "label": "Personal Gate Pass Allowance Time (Minutes)"
+  }
+ ],
+ "issingle": 1,
+ "modified": "2020-07-14 11:43:17.622063",
+ "modified_by": "Administrator",
+ "module": "Hr Policies",
+ "name": "Gate Pass Policies",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

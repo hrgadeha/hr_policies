@@ -71,7 +71,14 @@ def get_data():
 					"label": "Advance Salary Policies",
 					"description": _("Advance Salary Policies"),
 					"onboard": 1
-				}
+				},
+				{
+                                        "type": "doctype",
+                                        "name": "Gate Pass Policies",
+                                        "label": "Gate Pass Policies",
+                                        "description": _("Gate Pass Policies"),
+                                        "onboard": 1
+                                }
 			]
 		},
 		{

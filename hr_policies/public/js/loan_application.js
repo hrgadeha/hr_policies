@@ -1,4 +1,4 @@
-frappe.ui.form.on('Loan Application', {
+/*frappe.ui.form.on('Loan Application', {
 	applicant(frm,cdt,cdn) {
 		// your code here
 		//console.log(frm.doc.applicant)
@@ -64,3 +64,4 @@ frappe.ui.form.on('Loan Guarantor', {
 		}
 	}
 });
+*/

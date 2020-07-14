@@ -1,10 +1,12 @@
 {
+ "autoname": "GP-.####",
  "creation": "2020-07-11 20:36:17.588767",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "type",
+  "lop",
   "column_break_2",
   "company",
   "section_break_4",
@@ -14,6 +16,13 @@
   "column_break_8",
   "date_time",
   "apply_for",
+  "apply_for_tour",
+  "section_break_12",
+  "location",
+  "work_detail",
+  "column_break_15",
+  "tour_duration",
+  "reason",
   "amended_from"
  ],
  "fields": [
@@ -46,16 +55,20 @@
    "options": "Employee"
   },
   {
+   "fetch_from": "employee.employee_name",
    "fieldname": "employee_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Employee Name",
    "read_only": 1
   },
   {
+   "fetch_from": "employee.department",
    "fieldname": "department",
    "fieldtype": "Link",
    "label": "Department",
-   "options": "Department"
+   "options": "Department",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_8",
@@ -64,12 +77,14 @@
   {
    "fieldname": "date_time",
    "fieldtype": "Datetime",
-   "label": "Date TIme"
+   "label": "Date TIme",
+   "reqd": 1
   },
   {
    "fieldname": "apply_for",
    "fieldtype": "Int",
-   "label": "Apply For (Minutes)"
+   "label": "Apply For (Minutes)",
+   "reqd": 1
   },
   {
    "fieldname": "amended_from",
@@ -79,10 +94,54 @@
    "options": "Gate Pass",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.type == \"Official\";",
+   "fieldname": "apply_for_tour",
+   "fieldtype": "Check",
+   "label": "Apply For Tour"
+  },
+  {
+   "depends_on": "eval:doc.apply_for_tour",
+   "fieldname": "section_break_12",
+   "fieldtype": "Section Break",
+   "label": "Tour Details"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location"
+  },
+  {
+   "fieldname": "work_detail",
+   "fieldtype": "Small Text",
+   "label": "Work Detail"
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tour_duration",
+   "fieldtype": "Int",
+   "label": "Tour Duration (Days)"
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "label": "Reason"
+  },
+  {
+   "default": "0",
+   "fieldname": "lop",
+   "fieldtype": "Check",
+   "label": "LOP",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
- "modified": "2020-07-11 21:03:17.118252",
+ "modified": "2020-07-14 12:19:17.513119",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Gate Pass",
