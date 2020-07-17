@@ -82,6 +82,9 @@ app_license = "MIT"
 doc_events = {
 	"Loan Application": {
 		"validate": "hr_policies.custom_validate.validate_guarantor"
+	},
+	"Employee": {
+		"on_change": "hr_policies.hr_policies.doctype.referral_bonus_application.referral_bonus_application.updateADS"
 	}
 }
 
@@ -98,7 +101,11 @@ fixtures = [
 			"Loan Application-gross_salary",
 			"Loan Application-loan_guarantor",
 			"Loan Application-guarantor_details",
-			"Loan Application-eligible_amount"
+			"Loan Application-eligible_amount",
+			"Loan Application-section_break_1",
+			"Loan Application-policies",
+			"Employee-reference_of_employee_",
+			"Additional Salary-bonus_for_employee"
 		]
 	   ]
 	]

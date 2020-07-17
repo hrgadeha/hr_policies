@@ -21,3 +21,14 @@ class GatePass(Document):
 
 		else:
 			self.lop = 0
+
+
+@frappe.whitelist()
+def getPLS():
+	pls = []
+	no = frappe.db.get_single_value('Gate Pass Policies', 'no_of_gate_pass_allowed_for_personal_work')
+	pls.append(no)
+	time = frappe.db.get_single_value('Gate Pass Policies', 'personal_gate_pass_allowance_time')
+	pls.append(time)
+	return pls
+

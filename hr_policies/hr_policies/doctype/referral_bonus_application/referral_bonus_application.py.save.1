@@ -1,0 +1,27 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2020, Hardik gadesha and contributors
+# For license information, please see license.txt
+
+from __future__ import unicode_literals
+import frappe
+import datetime
+import calendar
+from dateutil.relativedelta import relativedelta
+from frappe.model.document import Document
+
+class ReferralBonusApplication(Document):
+	def validate(self):
+		validity = frappe.db.get_single_value('Referral Bonus Policies', 'bonus_applicable_after_month')
+		self.bonus_payment_date = (datetime.datetime.today() + relativedelta(months=+validity)).date()
+		self.last_date = 
+		if self.is_labour:
+			self.bonus_applicable = frappe.db.get_single_value('Referral Bonus Policies', 'labour_referral_bonus')
+
+		if self.is_employee:
+			self.bonus_applicable = frappe.db.get_single_value('Referral Bonus Policies', 'staff_referral_bonus')
+
+
+	def on_submit(self):
+		validity = frappe.db.get_single_value('Referral Bonus Policies', 'bonus_applicable_after_month')
+		self.bonus_payment_date = (datetime.datetime.today() + relativedelta(months=+validity)).date()
+		

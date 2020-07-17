@@ -88,3 +88,13 @@ WHERE lp.docstatus<>2 AND lg.status='Active'
 def validate_guarantor(self,method):
 	if len(self.loan_guarantor) < 2:
 		frappe.throw(_("2 Loan Guarantor Require For Loan Application"))
+
+@frappe.whitelist()
+def getPLS():
+	pls = []
+	pls.append(frappe.db.get_single_value('Loan Policies', 'loan_eligibility_after'))
+	pls.append(frappe.db.get_single_value('Loan Policies', 'loan_repayment_period'))
+	pls.append(frappe.db.get_single_value('Loan Policies', 'no_of_guarantor_need'))
+	pls.append(frappe.db.get_single_value('Loan Policies', 'no_of_salary_slip_for_eligible'))
+	pls.append(frappe.db.get_single_value('Loan Policies', 'max_as_guarantor_in_loan'))
+	return pls

@@ -1,0 +1,14 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2020, Hardik gadesha and contributors
+# For license information, please see license.txt
+
+from __future__ import unicode_literals
+import frappe
+from datetime import date, timedelta
+import calendar
+from frappe.model.document import Document
+
+class ReferralBonusApplication(Document):
+	def validate(self):
+		validity = frappe.db.get_single_value('Referral Bonus Policies', 'bonus_applicable_after_month')
+		self.bonus_applicable = self.approval_date + relativedelta(months=+validity)

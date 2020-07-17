@@ -60,25 +60,11 @@ def get_data():
                                 },
 				{
 					"type": "doctype",
-					"name": "Referral Bonus Policies",
-					"label": "Referral Bonus Policies",
-					"description": _("Referral Bonus Policies"),
-					"onboard": 1
-				},
-				{
-					"type": "doctype",
 					"name": "Advance Salary Policies",
 					"label": "Advance Salary Policies",
 					"description": _("Advance Salary Policies"),
 					"onboard": 1
-				},
-				{
-                                        "type": "doctype",
-                                        "name": "Gate Pass Policies",
-                                        "label": "Gate Pass Policies",
-                                        "description": _("Gate Pass Policies"),
-                                        "onboard": 1
-                                }
+				}
 			]
 		},
 		{
@@ -90,8 +76,33 @@ def get_data():
                                         "label": "Gate Pass",
                                         "description": _("Gate Pass"),
                                         "onboard": 1
+                                },
+				{
+                                        "type": "doctype",
+                                        "name": "Gate Pass Policies",
+                                        "label": "Gate Pass Policies",
+                                        "description": _("Gate Pass Policies"),
+                                        "onboard": 1
+                                }
+                        ]
+                },
+		{
+                        "label": _("Referral Bonus"),
+                        "items": [
+                                {
+                                        "type": "doctype",
+                                        "name": "Referral Bonus Application",
+                                        "label": "Referral Bonus Application",
+                                        "description": _("Referral Bonus Application"),
+                                        "onboard": 1
+                                },
+                                {
+                                        "type": "doctype",
+                                        "name": "Referral Bonus Policies",
+                                        "label": "Referral Bonus Policies",
+                                        "description": _("Referral Bonus Policies"),
+                                        "onboard": 1
                                 }
                         ]
                 }
-
 ]
