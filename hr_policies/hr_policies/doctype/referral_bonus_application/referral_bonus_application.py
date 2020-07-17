@@ -55,6 +55,7 @@ def getPLS():
 @frappe.whitelist()
 def updateADS(self,method):
 	if self.status == "Left":
-		ads = frappe.db.get_list('Additional Salary', {'employee': self.reference_of_employee_,'bonus_for_employee':self.name}, ['name'])
+		ads = frappe.db.get_list('Additional Salary', filters={'employee': self.reference_of_employee_,'bonus_for_employee':self.name}, fields=['name'])
 		for i in ads:
-			i.cancel()
+			salary = frappe.get_doc("Additional Salary",i)
+			salary.cancel()
