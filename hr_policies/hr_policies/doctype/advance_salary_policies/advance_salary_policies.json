@@ -5,7 +5,9 @@
  "engine": "InnoDB",
  "field_order": [
   "salary_should_be_below_or_equal_to",
-  "advance_salary_component"
+  "advance_salary_component",
+  "column_break_3",
+  "advance_applicable_percentage"
  ],
  "fields": [
   {
@@ -18,10 +20,19 @@
    "fieldtype": "Link",
    "label": "Advance Salary Component",
    "options": "Salary Component"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "advance_applicable_percentage",
+   "fieldtype": "Percent",
+   "label": "Advance applicable percentage"
   }
  ],
  "issingle": 1,
- "modified": "2020-07-15 18:18:30.002239",
+ "modified": "2020-07-18 19:24:49.967003",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Advance Salary Policies",

@@ -1,9 +1,10 @@
 from __future__ import unicode_literals
 import frappe
 from frappe import _
-from frappe.utils import formatdate, format_datetime, getdate, get_datetime, nowdate, flt, cstr, add_days, today,month_diff
+from frappe.utils import formatdate, format_datetime, getdate, get_datetime,get_first_day,get_last_day, nowdate, flt, cint, cstr, add_days, today,month_diff,date_diff
 from datetime import datetime
 from erpnext.hr.doctype.salary_structure.salary_structure import make_salary_slip
+from frappe.model.mapper import get_mapped_doc
 
 @frappe.whitelist()
 def validate_eligibility(employee):
@@ -12,7 +13,6 @@ def validate_eligibility(employee):
 	d1=getdate(today())
 	d2=getdate(joining_date)
 	month_diff = diff_month(datetime(d1.year,d1.month,d1.day), datetime(d2.year,d2.month,d2.day))
-	frappe.errprint(month_diff)
 	if int(month_diff) < int(frappe.db.get_value("Loan Policies","Loan Policies","loan_eligibility_after")):
 		return False
 	else:
@@ -98,3 +98,114 @@ def getPLS():
 	pls.append(frappe.db.get_single_value('Loan Policies', 'no_of_salary_slip_for_eligible'))
 	pls.append(frappe.db.get_single_value('Loan Policies', 'max_as_guarantor_in_loan'))
 	return pls
+
+#validate salary advance
+@frappe.whitelist()
+def validate_employee_advance(employee,date):
+	employee_type = frappe.db.get_value("Employee",employee,"employment_type")
+	if employee_type == "Probation":
+		frappe.msgprint(_("Advance Salary Request Apply After Probation Period"))
+		return False
+	start_date = frappe.db.get_value("Employee",employee,"final_confirmation_date")
+	if getdate(start_date) > getdate(date):
+		frappe.msgprint(_("Advance Salary Request Apply After Probation Period"))
+		return False
+	sal_st = get_sal_structure(employee)
+	from erpnext.hr.doctype.employee.employee import get_holiday_list_for_employee
+	salary_slip = make_salary_slip_custom(sal_st, employee=employee,start_date=get_first_day(date),end_date=add_days(get_first_day(date),19), ignore_permissions=True)
+	frappe.errprint(salary_slip)
+	holiday_list = get_holiday_list_for_employee(employee, False)
+	attendance = get_filtered_date_list(employee, get_first_day(date), add_days(get_first_day(date),19),holiday_list)
+	working_days = date_diff(get_last_day(date),get_first_day(date))
+	gross_pay_day = salary_slip.gross_pay / working_days
+	final_working_days = 20 - (flt(salary_slip.total_working_days) - flt(attendance))
+	gross_pay_eligible_for_advance = (flt(gross_pay_day) * flt(final_working_days)) * 0.60
+	return flt(gross_pay_day) * flt(final_working_days)
+
+def get_filtered_date_list(employee,start_date,end_date,holiday_list):
+	attendance = frappe.db.sql("""
+SELECT count(name) as 'att_count'
+FROM `tabAttendance`
+WHERE attendance_date NOT IN
+    (SELECT hd.holiday_date
+     FROM `tabHoliday List` AS hl
+     INNER JOIN `tabHoliday` AS hd ON hl.name=hd.parent
+     WHERE hl.name=%s)
+  AND employee=%s AND status='Present'  AND docstatus=1
+  AND attendance_date BETWEEN %s AND %s
+	""",(holiday_list,employee,start_date,end_date),as_dict=True)
+	frappe.errprint(attendance)
+	if attendance:
+		return attendance[0].att_count
+	else:
+		return 0
+
+def get_loan_amount(employee,start_date,end_date):
+	loan = frappe.db.sql("""
+SELECT rs.total_payment AS 'loan_amount'
+FROM `tabLoan` AS loan
+INNER JOIN `tabRepayment Schedule` AS rs ON loan.name=rs.parent
+WHERE loan.applicant=%s
+  AND rs.payment_date BETWEEN %s AND %s
+  AND rs.paid=0	
+	""",(employee,start_date,end_date),as_dict=1)
+	if loan:
+		return loan[0].loan_amount
+	else:
+		return 0
+
+@frappe.whitelist()
+def make_salary_slip_custom(source_name, target_doc = None, employee = None,start_date = None,end_date = None,as_print = False, print_format = None, for_preview=0, ignore_permissions=False):
+	def postprocess(source, target):
+		if employee:
+			employee_details = frappe.db.get_value("Employee", employee,
+				["employee_name", "branch", "designation", "department"], as_dict=1)
+			target.employee = employee
+			target.employee_name = employee_details.employee_name
+			target.branch = employee_details.branch
+			target.designation = employee_details.designation
+			target.department = employee_details.department
+			target.start_date = start_date
+			target.end_date = end_date
+		target.run_method('process_salary_structure', for_preview=for_preview)
+
+	doc = get_mapped_doc("Salary Structure", source_name, {
+		"Salary Structure": {
+			"doctype": "Salary Slip",
+			"field_map": {
+				"total_earning": "gross_pay",
+				"name": "salary_structure"
+			}
+		}
+	}, target_doc, postprocess, ignore_child_tables=True, ignore_permissions=ignore_permissions)
+
+	if cint(as_print):
+		doc.name = 'Preview for {0}'.format(employee)
+		return frappe.get_print(doc.doctype, doc.name, doc = doc, print_format = print_format)
+	else:
+		return doc
+
+
+@frappe.whitelist()
+def preview_working_days(employee):
+        sal_st = get_sal_structure(employee)
+        salary_slip = make_salary_slip(sal_st, employee=employee,ignore_permissions=True)
+        frappe.errprint(salary_slip)
+        return salary_slip.total_working_days or 0
+
+@frappe.whitelist()
+def get_hourly_rate(employee,labour,staff):
+	gross_pay = preview_salary_slip(employee)
+	working_days = preview_working_days(employee)
+
+	hours = 0.0
+	if labour:
+		hours = frappe.db.get_single_value('Attendance Policies', 'working_hours_for_labours')
+	if staff:
+		hours = frappe.db.get_single_value('Attendance Policies', 'working_hours_for_staff')
+	eligible_dict = dict(
+		gross_pay = gross_pay,
+		per_day = (gross_pay / working_days) / hours
+	)
+	frappe.errprint(eligible_dict)
+	return eligible_dict

@@ -104,5 +104,17 @@ def get_data():
                                         "onboard": 1
                                 }
                         ]
+                },
+		{
+                        "label": _("Overtime Tracking"),
+                        "items": [
+                                {
+                                        "type": "doctype",
+                                        "name": "Overtime Application",
+                                        "label": "Overtime Application",
+                                        "description": _("Overtime Application"),
+                                        "onboard": 1
+                                }
+                        ]
                 }
 ]

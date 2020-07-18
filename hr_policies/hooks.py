@@ -105,7 +105,10 @@ fixtures = [
 			"Loan Application-section_break_1",
 			"Loan Application-policies",
 			"Employee-reference_of_employee_",
-			"Additional Salary-bonus_for_employee"
+			"Additional Salary-bonus_for_employee",
+			"Employee Advance-eligible_advance_amount_",
+			"Employee-is_labour",
+			"Employee-is_employee"
 		]
 	   ]
 	]

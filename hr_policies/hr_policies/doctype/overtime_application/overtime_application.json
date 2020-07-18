@@ -1,0 +1,121 @@
+{
+ "autoname": "OTR-.####",
+ "creation": "2020-07-18 19:28:48.020724",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "employee_name",
+  "is_labour",
+  "is_employee",
+  "column_break_3",
+  "request_date",
+  "section_break_5",
+  "overtime_worked",
+  "column_break_7",
+  "overtime_wages",
+  "applicable_amount",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "request_date",
+   "fieldtype": "Date",
+   "label": "Request Date"
+  },
+  {
+   "fieldname": "section_break_5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "overtime_worked",
+   "fieldtype": "Float",
+   "label": "Overtime Worked"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "overtime_wages",
+   "fieldtype": "Currency",
+   "label": "Overtime Wages (Hourly)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "applicable_amount",
+   "fieldtype": "Currency",
+   "label": "Applicable Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Overtime Application",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fetch_from": "employee.is_labour",
+   "fieldname": "is_labour",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Is Labour"
+  },
+  {
+   "default": "0",
+   "fetch_from": "employee.is_employee",
+   "fieldname": "is_employee",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Is Employee"
+  }
+ ],
+ "is_submittable": 1,
+ "modified": "2020-07-18 21:04:45.940538",
+ "modified_by": "Administrator",
+ "module": "Hr Policies",
+ "name": "Overtime Application",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
