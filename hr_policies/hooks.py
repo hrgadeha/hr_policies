@@ -85,6 +85,11 @@ doc_events = {
 	},
 	"Employee": {
 		"on_change": "hr_policies.hr_policies.doctype.referral_bonus_application.referral_bonus_application.updateADS"
+	},
+	"Employee Advance": {
+		"validate": "hr_policies.custom_validate.validate_loan_amount_for_advance",
+		"on_submit":"hr_policies.custom_validate.add_additional_salary",
+		"on_cancel":"hr_policies.custom_validate.cancel_advance_salary"
 	}
 }
 
@@ -107,6 +112,10 @@ fixtures = [
 			"Employee-reference_of_employee_",
 			"Additional Salary-bonus_for_employee",
 			"Employee Advance-eligible_advance_amount_",
+			"Employee Advance-additional_salary_id",
+			"Employee Advance-extra_approval_require",
+			"Employee Advance-emi_amount",
+			"Employee Advance-remain_amount_eligible",
 			"Employee-is_labour",
 			"Employee-is_employee"
 		]

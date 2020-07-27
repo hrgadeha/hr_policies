@@ -103,7 +103,6 @@ def getPLS():
 #validate salary advance
 @frappe.whitelist()
 def validate_employee_advance(employee,date):
-	policies = frappe.get_doc("Advance Salary Policies","Advance Salary Policies")
 	employee_type = frappe.db.get_value("Employee",employee,"employment_type")
 	if employee_type == "Probation":
 		frappe.msgprint(_("Advance Salary Request Apply After Probation Period"))
@@ -112,14 +111,12 @@ def validate_employee_advance(employee,date):
 	if getdate(start_date) > getdate(date):
 		frappe.msgprint(_("Advance Salary Request Apply After Probation Period"))
 		return False
-	if get_salary_advance_total(employee,date,policies) == True:
+	if get_salary_advance_total(employee,date) == True:
 		frappe.msgprint(_("Already Applied Employee Advance In Last 6 Months"))
 		return False
+
 	sal_st = get_sal_structure(employee)
 	salary_slip = make_salary_slip_custom(sal_st, employee=employee,start_date=get_first_day(date),end_date=add_days(get_first_day(date),19), ignore_permissions=True)
-	if salary_slip.gross_pay > flt(policies.salary_should_be_below_or_equal_to):
-		frappe.msgprint(_("Gross Pay Must Be Less Than or Equal {0}").format(policies.salary_should_be_below_or_equal_to))
-		return False		
 	holiday_list = get_holiday_list_for_employee(employee, False)
 	attendance = get_filtered_date_list(employee, get_first_day(date), add_days(get_first_day(date),19),holiday_list)
 	working_days = date_diff(get_last_day(date),get_first_day(date)) + 1
@@ -129,14 +126,12 @@ def validate_employee_advance(employee,date):
 	loan = get_loan_amount(employee,get_first_day(date),get_last_day(date))
 	return gross_pay_eligible_for_advance,loan
 
-def get_salary_advance_total(employee,date,policies):
-	if not policies.advance_salary_eligible_after_month:
-		frappe.throw(_("Set Advance Salary Eligible After Month In Advance Salary Policies"))
-	start_date = add_months(date,policies.advance_salary_eligible_after_month*-1)
+def get_salary_advance_total(employee,date):
+	start_date = add_months(date, -6)
 	end_date = date
-	advance_salary = frappe.db.sql("""select count(*) as 'count' from `tabEmployee Advance` where docstatus=1 and posting_date between %s and %s and employee=%s""",(start_date,end_date,employee),as_dict=1)
+	advance_salary = frappe.db.sql("""select count(*) from `tabEmployee Advance` where posting_date between %s and %s and employee=%s""",(start_date,end_date,employee),as_dict=1)
 	frappe.errprint(advance_salary)
-	if advance_salary and advance_salary[0].count > 0:
+	if advance_salary:
 		return True
 	else:
 		return False
@@ -256,24 +251,4 @@ def get_hourly_rate(employee,labour,staff):
 	frappe.errprint(eligible_dict)
 	return eligible_dict
 
-@frappe.whitelist()
-def add_additional_salary(self,method):
-	doc = frappe.get_doc(dict(
-		doctype = "Additional Salary",
-		payroll_date = get_last_day(self.posting_date),
-		employee = self.employee,
-		company = self.company,
-		salary_component = frappe.db.get_single_value('Advance Salary Policies', 'advance_salary_component'),
-		amount = self.advance_amount,
-		overwrite_salary_structure_amount = 1
-	)).insert(ignore_permissions = True)
-	doc.submit()
-	frappe.db.set_value(self.doctype,self.name,"additional_salary_id",doc.name)
-
-@frappe.whitelist()
-def cancel_advance_salary(self,method):
-	if self.additional_salary_id:
-		add_sal = frappe.get_doc("Additional Salary",self.additional_salary_id)
-		add_sal.cancel()
-		frappe.delete_doc("Additional Salary",add_sal.name)
 

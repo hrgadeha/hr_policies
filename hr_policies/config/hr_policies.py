@@ -57,14 +57,7 @@ def get_data():
                                         "label": "Attendance Policies",
                                         "description": _("Attendance Policies"),
                                         "onboard": 1
-                                },
-				{
-					"type": "doctype",
-					"name": "Advance Salary Policies",
-					"label": "Advance Salary Policies",
-					"description": _("Advance Salary Policies"),
-					"onboard": 1
-				}
+                                }
 			]
 		},
 		{
@@ -101,6 +94,25 @@ def get_data():
                                         "name": "Referral Bonus Policies",
                                         "label": "Referral Bonus Policies",
                                         "description": _("Referral Bonus Policies"),
+                                        "onboard": 1
+                                }
+                        ]
+                },
+		{
+                        "label": _("Advance Salary"),
+                        "items": [
+                                {
+                                        "type": "doctype",
+                                        "name": "Employee Advance",
+                                        "label": "Employee Advance",
+                                        "description": _("Employee Advance"),
+                                        "onboard": 1
+                                },
+                                {
+                                        "type": "doctype",
+                                        "name": "Advance Salary Policies",
+                                        "label": "Advance Salary Policies",
+                                        "description": _("Advance Salary Policies"),
                                         "onboard": 1
                                 }
                         ]

@@ -7,7 +7,8 @@
   "salary_should_be_below_or_equal_to",
   "advance_salary_component",
   "column_break_3",
-  "advance_applicable_percentage"
+  "advance_applicable_percentage",
+  "advance_salary_eligible_after_month"
  ],
  "fields": [
   {
@@ -29,10 +30,16 @@
    "fieldname": "advance_applicable_percentage",
    "fieldtype": "Percent",
    "label": "Advance applicable percentage"
+  },
+  {
+   "description": "Advance salary should not be taken by the employee in last this  number of month",
+   "fieldname": "advance_salary_eligible_after_month",
+   "fieldtype": "Int",
+   "label": "Advance Salary Eligible After Month"
   }
  ],
  "issingle": 1,
- "modified": "2020-07-18 19:24:49.967003",
+ "modified": "2020-07-20 13:56:10.716268",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Advance Salary Policies",
