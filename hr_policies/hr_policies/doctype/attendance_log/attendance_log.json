@@ -1,0 +1,114 @@
+{
+ "autoname": "ALOG.#######",
+ "creation": "2020-08-02 00:48:02.718440",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "card_no",
+  "column_break_3",
+  "attendance_type",
+  "attendance_time",
+  "machine_id",
+  "other_details_section",
+  "shift",
+  "attendance",
+  "column_break_10",
+  "shift_start_time",
+  "shift_end_time"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "card_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Card No"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attendance_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Attendance Type",
+   "options": "\nIN\nOUT"
+  },
+  {
+   "fieldname": "attendance_time",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Attendance Time"
+  },
+  {
+   "fieldname": "machine_id",
+   "fieldtype": "Read Only",
+   "label": "Machine ID"
+  },
+  {
+   "fieldname": "other_details_section",
+   "fieldtype": "Section Break",
+   "label": "Other Details"
+  },
+  {
+   "fieldname": "shift",
+   "fieldtype": "Link",
+   "label": "Shift",
+   "options": "Shift Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "attendance",
+   "fieldtype": "Link",
+   "label": "Attendance",
+   "options": "Attendance",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "shift_start_time",
+   "fieldtype": "Time",
+   "label": "Shift Start Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "shift_end_time",
+   "fieldtype": "Time",
+   "label": "Shift End Time",
+   "read_only": 1
+  }
+ ],
+ "modified": "2020-08-04 00:56:36.092754",
+ "modified_by": "Administrator",
+ "module": "Hr Policies",
+ "name": "Attendance Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

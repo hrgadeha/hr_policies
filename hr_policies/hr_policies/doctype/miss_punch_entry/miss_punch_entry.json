@@ -1,0 +1,76 @@
+{
+ "autoname": "MPE.#####",
+ "creation": "2020-08-06 00:46:12.938758",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "company_email",
+  "approver",
+  "attendance_date",
+  "last_punch_time",
+  "last_punch_type"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.company_email",
+   "fieldname": "company_email",
+   "fieldtype": "Read Only",
+   "label": "Company Email",
+   "options": "Email"
+  },
+  {
+   "fetch_from": "employee.leave_approver",
+   "fieldname": "approver",
+   "fieldtype": "Read Only",
+   "label": "Approver",
+   "options": "Email"
+  },
+  {
+   "fieldname": "attendance_date",
+   "fieldtype": "Datetime",
+   "label": "Attendance Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_punch_time",
+   "fieldtype": "Time",
+   "label": "Last Punch Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_punch_type",
+   "fieldtype": "Read Only",
+   "label": "Last Punch Type"
+  }
+ ],
+ "modified": "2020-08-06 00:46:12.938758",
+ "modified_by": "Administrator",
+ "module": "Hr Policies",
+ "name": "Miss Punch Entry",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

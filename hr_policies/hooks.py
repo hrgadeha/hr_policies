@@ -90,6 +90,9 @@ doc_events = {
 		"validate": "hr_policies.custom_validate.validate_loan_amount_for_advance",
 		"on_submit":"hr_policies.custom_validate.add_additional_salary",
 		"on_cancel":"hr_policies.custom_validate.cancel_advance_salary"
+	},
+	"Attendance Log":{
+		"before_insert":"hr_policies.attendance_integration.update_attendance_log"
 	}
 }
 
@@ -117,7 +120,8 @@ fixtures = [
 			"Employee Advance-emi_amount",
 			"Employee Advance-remain_amount_eligible",
 			"Employee-is_labour",
-			"Employee-is_employee"
+			"Employee-is_employee",
+			"Employee-card_no"
 		]
 	   ]
 	]

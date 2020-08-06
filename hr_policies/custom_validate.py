@@ -6,6 +6,8 @@ from datetime import datetime
 from erpnext.hr.doctype.salary_structure.salary_structure import make_salary_slip
 from frappe.model.mapper import get_mapped_doc
 from erpnext.hr.doctype.employee.employee import get_holiday_list_for_employee
+import json
+from ast import literal_eval 
 
 @frappe.whitelist()
 def validate_eligibility(employee):
@@ -277,3 +279,30 @@ def cancel_advance_salary(self,method):
 		add_sal.cancel()
 		frappe.delete_doc("Additional Salary",add_sal.name)
 
+@frappe.whitelist()
+def add_attendance_log():
+	try:
+		frappe.log_error(get_request_form_data())
+		main_data = get_request_form_data()
+		frappe.log_error(main_data.data)
+		attendance_data = main_data.data
+		for row in eval(attendance_data):
+			frappe.log_error(row)
+			doc = frappe.get_doc(dict(
+				doctype = "Attendance Log",
+				card_no = row[1],
+				attendance_type = 'IN',
+				attendance_time = get_datetime(row[2]),
+				machine_id = row[0]
+
+			)).insert(ignore_permissions = True)
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback())
+
+def get_request_form_data():
+	if frappe.local.form_dict.data is None:
+		data = frappe.safe_decode(frappe.local.request.get_data())
+	else:
+		data = frappe.local.form_dict.data
+
+	return frappe.parse_json(data)
