@@ -5,39 +5,22 @@
  "engine": "InnoDB",
  "field_order": [
   "late_allowance_for",
-  "working_hours_for_staff",
-  "working_hours_for_labours",
-  "column_break_4",
-  "lunch_period"
+  "max_late_allowance_for"
  ],
  "fields": [
   {
    "fieldname": "late_allowance_for",
    "fieldtype": "Int",
-   "label": "Late Allowance For (Minutes)"
+   "label": "Minimum Late Allowance For (Minutes)"
   },
   {
-   "fieldname": "working_hours_for_staff",
+   "fieldname": "max_late_allowance_for",
    "fieldtype": "Int",
-   "label": "Working Hours for staff"
-  },
-  {
-   "fieldname": "working_hours_for_labours",
-   "fieldtype": "Int",
-   "label": "Working Hours for labours"
-  },
-  {
-   "fieldname": "column_break_4",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "lunch_period",
-   "fieldtype": "Int",
-   "label": "Lunch Period (Min)"
+   "label": "Maximum Late Allowance For (Minutes)"
   }
  ],
  "issingle": 1,
- "modified": "2020-07-09 20:52:04.126523",
+ "modified": "2020-08-08 23:23:23.335536",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Attendance Policies",

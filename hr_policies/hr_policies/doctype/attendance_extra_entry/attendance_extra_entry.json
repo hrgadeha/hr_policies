@@ -1,0 +1,59 @@
+{
+ "creation": "2020-08-08 23:11:11.317659",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "is_labour",
+  "is_employee",
+  "hours"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_labour",
+   "fieldtype": "Check",
+   "label": "Is Labour"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_employee",
+   "fieldtype": "Check",
+   "label": "Is Employee"
+  },
+  {
+   "fieldname": "hours",
+   "fieldtype": "Float",
+   "label": "Hours"
+  }
+ ],
+ "modified": "2020-08-08 23:11:11.317659",
+ "modified_by": "Administrator",
+ "module": "Hr Policies",
+ "name": "Attendance Extra Entry",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

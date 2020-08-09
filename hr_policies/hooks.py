@@ -93,6 +93,9 @@ doc_events = {
 	},
 	"Attendance Log":{
 		"before_insert":"hr_policies.attendance_integration.update_attendance_log"
+	},
+	"Attendance":{
+		"on_submit":"hr_policies.attendance_integration.add_late_entry"
 	}
 }
 
@@ -121,7 +124,12 @@ fixtures = [
 			"Employee Advance-remain_amount_eligible",
 			"Employee-is_labour",
 			"Employee-is_employee",
-			"Employee-card_no"
+			"Employee-card_no",
+			"Attendance-in_time",
+			"Attendance-out_time",
+			"Attendance-miss_punch",
+			"Attendance-overtime",
+			"Attendance-office_hours"
 		]
 	   ]
 	]
@@ -132,23 +140,15 @@ fixtures = [
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"hr_policies.tasks.all"
-# 	],
-# 	"daily": [
-# 		"hr_policies.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"hr_policies.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"hr_policies.tasks.weekly"
-# 	]
-# 	"monthly": [
-# 		"hr_policies.tasks.monthly"
-# 	]
-# }
+scheduler_events = {
+	"cron": {
+		"30 23 1 * *": [
+			"hr_policies.hr_policies.doctype.gate_pass.gate_pass.insertGP",
+			"hr_policies.hr_policies.doctype.gate_pass.gate_pass.insertOT",
+        ]
+    }
+
+}
 
 # Testing
 # -------

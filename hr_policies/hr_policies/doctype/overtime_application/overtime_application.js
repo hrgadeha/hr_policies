@@ -7,15 +7,12 @@ frappe.ui.form.on('Overtime Application', {
 	// }
 });
 
-frappe.ui.form.on('Overtime Application', {
-	employee(frm,cdt,cdn) {
-		// your code here
-		//console.log(frm.doc.applicant)
-		frappe.model.set_value(cdt,cdn,"gross_salary","");
-		if(frm.doc.employee){
+/*frappe.ui.form.on('Overtime Application', {
+	employee(frm) {
+		if(frm.doc.employee && frm.doc.shift){
 		    frappe.call({
 		        method:"hr_policies.custom_validate.get_hourly_rate",
-		        args:{"employee":frm.doc.employee,"labour":frm.doc.is_labour,"staff":frm.doc.is_employee},
+		        args:{"employee":frm.doc.employee},
 		        callback:function(r){
 		            console.log(r.message);
 		                frappe.model.set_value(cdt,cdn,"overtime_wages",r.message.per_day);
@@ -23,4 +20,36 @@ frappe.ui.form.on('Overtime Application', {
 		    });
 		}
 	}
+});*/
+
+
+
+frappe.ui.form.on("Overtime Application", {
+  employee: function(frm) {
+    frappe.call({
+    "method": "hr_policies.hr_policies.doctype.overtime_application.overtime_application.getOT",
+args: {
+employee: frm.doc.employee,
+request_date: frm.doc.request_date,
+},
+callback:function(r){
+        frm.set_value("overtime_based_on_bio_metric_punch",r.message[0][0]);
+	}
+    });
+}
+});
+
+frappe.ui.form.on("Overtime Application", {
+  request_date: function(frm) {
+    frappe.call({
+    "method": "hr_policies.hr_policies.doctype.overtime_application.overtime_application.getOT",
+args: {
+employee: frm.doc.employee,
+request_date: frm.doc.request_date,
+},
+callback:function(r){
+        frm.set_value("overtime_based_on_bio_metric_punch",r.message[0][0]);
+	}
+    });
+}
 });

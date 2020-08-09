@@ -14,7 +14,7 @@ frappe.ui.form.on('Gate Pass', {
 args: {
 },
 callback:function(r){
-        console.log(r.message);
+//        console.log(r.message);
 		var help_content =
 			`<br><br>
 			<table class="table table-bordered" style="background-color: #f9f9f9;">
@@ -38,5 +38,64 @@ callback:function(r){
 	}
     });
 
+	}
+});
+
+
+frappe.ui.form.on('Gate Pass', {
+	from_time(frm) {
+		if(frm.doc.from_time > frm.doc.to_time){
+		    frappe.throw("To Time Can Not Be Less Then From Time");
+		    frm.set_value("apply_for",0);
+		}
+
+		else{
+		    var startTime = moment(frm.doc.from_time, "HH:mm:ss a");
+            var endTime = moment(frm.doc.to_time, "HH:mm:ss a");
+		    var duration = moment.duration(endTime.diff(startTime));
+		    var hours = (endTime.diff(startTime, 'hours')) * 60;
+		    var mins = moment.utc(moment(endTime, "HH:mm:ss").diff(moment(startTime, "HH:mm:ss"))).format("mm");
+		    var total_min = parseInt(hours) + parseInt(mins);
+		    frm.set_value("apply_for",total_min);
+		    frm.set_value("apply_for",0);
+		}
+	}
+});
+
+frappe.ui.form.on('Gate Pass', {
+	to_time(frm) {
+		if(frm.doc.from_time > frm.doc.to_time){
+		    frappe.throw("To Time Can Not Be Less Then From Time");
+		}
+
+		else{
+		    var startTime = moment(frm.doc.from_time, "HH:mm:ss a");
+            var endTime = moment(frm.doc.to_time, "HH:mm:ss a");
+		    var duration = moment.duration(endTime.diff(startTime));
+		    var hours = (endTime.diff(startTime, 'hours')) * 60;
+		    var mins = moment.utc(moment(endTime, "HH:mm:ss").diff(moment(startTime, "HH:mm:ss"))).format("mm");
+		    var total_min = parseInt(hours) + parseInt(mins);
+            frm.set_value("apply_for",total_min);
+		}
+	}
+});
+
+frappe.ui.form.on('Gate Pass', {
+	validate(frm) {
+		if(frm.doc.from_time > frm.doc.to_time){
+		    frappe.throw("To Time Can Not Be Less Then From Time");
+		    validated = false;
+		}
+	}
+});
+
+frappe.ui.form.on('Gate Pass', {
+	type(frm) {
+		if(frm.doc.type == "Official"){
+		    frm.set_df_property('apply_for',  'reqd', 0);
+		}
+		if(frm.doc.type == "Official"){
+		    frm.set_df_property('Personal',  'reqd', 1);
+		}
 	}
 });

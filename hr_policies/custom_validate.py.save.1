@@ -7,7 +7,7 @@ from erpnext.hr.doctype.salary_structure.salary_structure import make_salary_sli
 from frappe.model.mapper import get_mapped_doc
 from erpnext.hr.doctype.employee.employee import get_holiday_list_for_employee
 import json
-from ast import literal_eval
+from ast import literal_eval 
 
 @frappe.whitelist()
 def validate_eligibility(employee):
@@ -242,12 +242,11 @@ def preview_working_days(employee):
         return salary_slip.total_working_days or 0
 
 @frappe.whitelist()
-def get_hourly_rate(employee):
+def get_hourly_rate(employee,shift):
 	gross_pay = preview_salary_slip(employee)
 	working_days = preview_working_days(employee)
 
-	hours = frappe.db.sql("""select office_hours from `tabAttendance` where docstatus = 1 and employee = %s order by name desc 
-			limit 1;""",(employee))
+	hours = frappe.db.sql("""select TIMEDIFF(end_time,start_time) from `tabShift Type` where name = %s;""",(shift))
 
 	eligible_dict = dict(
 		gross_pay = gross_pay,
@@ -280,15 +279,11 @@ def cancel_advance_salary(self,method):
 @frappe.whitelist()
 def add_attendance_log():
 	try:
-		main_data = get_request_form_data()
+		main_data = get_request_form_data()		
 		attendance_data = main_data.data
 		last_row_machine_id = ''
 		for row in eval(attendance_data):
-			if not last_row_machine_id == '':
-				if flt(last_row_machine_id) < flt(row[0]):
-					last_row_machine_id = row[0]
-			else:
-				last_row_machine_id = row[0]
+			last_row_machine_id = row[0]
 			if not frappe.db.exists("Attendance Log", {"machine_id": row[0]}):
 				doc = frappe.get_doc(dict(
 					doctype = "Attendance Log",

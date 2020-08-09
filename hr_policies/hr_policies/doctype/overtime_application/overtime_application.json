@@ -7,15 +7,16 @@
  "field_order": [
   "employee",
   "employee_name",
-  "is_labour",
-  "is_employee",
   "column_break_3",
+  "company",
   "request_date",
   "section_break_5",
+  "overtime_based_on_bio_metric_punch",
   "overtime_worked",
   "column_break_7",
   "overtime_wages",
   "applicable_amount",
+  "paid",
   "amended_from"
  ],
  "fields": [
@@ -79,24 +80,28 @@
    "read_only": 1
   },
   {
-   "default": "0",
-   "fetch_from": "employee.is_labour",
-   "fieldname": "is_labour",
-   "fieldtype": "Check",
-   "hidden": 1,
-   "label": "Is Labour"
+   "fieldname": "overtime_based_on_bio_metric_punch",
+   "fieldtype": "Float",
+   "label": "Overtime Based On Bio metric Punch",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
-   "fetch_from": "employee.is_employee",
-   "fieldname": "is_employee",
+   "fieldname": "paid",
    "fieldtype": "Check",
-   "hidden": 1,
-   "label": "Is Employee"
+   "label": "Paid",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
   }
  ],
  "is_submittable": 1,
- "modified": "2020-07-18 21:04:45.940538",
+ "modified": "2020-08-09 12:24:31.747268",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Overtime Application",
