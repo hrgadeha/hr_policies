@@ -1,4 +1,4 @@
-/*frappe.ui.form.on('Loan Application', {
+frappe.ui.form.on('Loan Application', {
 	applicant(frm,cdt,cdn) {
 		// your code here
 		//console.log(frm.doc.applicant)
@@ -64,4 +64,46 @@ frappe.ui.form.on('Loan Guarantor', {
 		}
 	}
 });
-*/
+
+frappe.ui.form.on('Loan Application', {
+	refresh: function(frm) {
+	    frappe.call({
+    "method": "hr_policies.custom_validate.getPLS",
+args: {
+},
+callback:function(r){
+        console.log(r.message);
+		var help_content =
+			`<br><br>
+			<table class="table table-bordered" style="background-color: #f9f9f9;">
+				<tr><td>
+					<h4>
+						<i class="fa fa-hand-right"></i> 
+						${__("Notes")}:
+					</h4>
+					<ul>
+						<li>
+							${__("You Are Eligible For Loan After You Complete "+r.message[0]+" Months In Company.")}
+						</li>
+						<li>
+							${__("Standard Loan Repayment Period Is "+r.message[1]+" Months.")}
+						</li>
+						<li>
+							${__("You Must Have "+r.message[2]+" Guarantor to Apply For Loan.")}
+						</li>
+						<li>
+							${__("Eligible Loan Amount is Equal To Sum of Your Last "+r.message[3]+" Gross Salary.")}
+						</li>
+						<li>
+							${__("You Can Be Guarantor For Maximum "+r.message[4]+" Loan Application")}
+						</li>
+					</ul>
+				</td></tr>
+			</table>`;
+
+		set_field_options("policies", help_content);
+	}
+    });
+
+	}
+});

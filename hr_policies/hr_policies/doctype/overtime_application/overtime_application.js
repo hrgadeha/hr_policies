@@ -7,21 +7,19 @@ frappe.ui.form.on('Overtime Application', {
 	// }
 });
 
-/*frappe.ui.form.on('Overtime Application', {
-	employee(frm) {
-		if(frm.doc.employee && frm.doc.shift){
-		    frappe.call({
-		        method:"hr_policies.custom_validate.get_hourly_rate",
-		        args:{"employee":frm.doc.employee},
-		        callback:function(r){
-		            console.log(r.message);
-		                frappe.model.set_value(cdt,cdn,"overtime_wages",r.message.per_day);
-		        }
-		    });
-		}
-	}
-});*/
-
+frappe.ui.form.on('Overtime Application', {
+        employee(frm) {
+                if(frm.doc.employee){
+                    frappe.call({
+                        method:"hr_policies.custom_validate.get_hourly_rate",
+                        args:{"employee":frm.doc.employee},
+                        callback:function(r){
+                                frm.set_value("overtime_wages",r.message.per_day);
+                        }
+                    });
+                }
+        }
+});
 
 
 frappe.ui.form.on("Overtime Application", {

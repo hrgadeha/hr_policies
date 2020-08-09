@@ -99,3 +99,18 @@ frappe.ui.form.on('Gate Pass', {
 		}
 	}
 });
+
+
+frappe.ui.form.on('Gate Pass', {
+        employee(frm) {
+                if(frm.doc.employee){
+                    frappe.call({
+                        method:"hr_policies.custom_validate.get_hourly_rate",
+                        args:{"employee":frm.doc.employee},
+                        callback:function(r){
+                                frm.set_value("hourly_rate",r.message.per_day);
+                        }
+                    });
+                }
+        }
+});
