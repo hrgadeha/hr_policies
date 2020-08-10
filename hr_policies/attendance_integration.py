@@ -185,6 +185,22 @@ def add_late_entry(self,method):
 				late_mins = time_diff_in_hours(str(frappe.db.get_value("Shift Type",self.shift,"start_time")),str(self.in_time))
 				if flt(late_mins) >=  flt(att_settings.late_allowance_for) and flt(late_mins) <= flt(att_settings.max_late_allowance_for):
 					create_extra_entry(self.employee,self.attendance_date,0,1,flt(late_mins)/60)
+				else:
+					if flt(late_mins) > flt(att_settings.max_late_allowance_for):
+						create_leave(employee,date)
+
+
+def create_leave(employee,date):
+	doc = frappe.get_doc(dict(
+		doctype = "Leave Application",
+		from_date = date,
+		to_date = date,
+		half_day = 1,
+		leave_type = "Leave Without Pay",
+		leave_approver = frappe.db.get_value("Employee",employee,"leave_approver")
+	)).insert(ignore_permissions = True)
+	doc.status = "Approved"
+	doc.submit()
 
 def create_extra_entry(employee,date,is_labour,is_employee,hours):
 	doc = frappe.get_doc(dict(
@@ -192,6 +208,60 @@ def create_extra_entry(employee,date,is_labour,is_employee,hours):
 		employee = employee,
 		is_labour = is_labour,
 		is_employee= is_employee,
-		hours =hours
+		hours =hours,
+		date = date
 	)).insert(ignore_permissions = True)
 
+@frappe.whitelist()
+def add_late_entry_deduction():
+	from hr_policies.custom_validate import preview_salary_slip_for_late_entry
+	end_date = add_days(today(),-1)
+	start_date = get_first_day(end_date)
+	late_entry_doc = frappe.db.sql("""select employee,sum(hours) as 'hours' from `tabAttendance Extra Entry` where date between %s and %s group by employee""",(start_date,end_date),as_dict=1)
+	for row in late_entry_doc:
+		try:
+			salary_slip = preview_salary_slip_for_late_entry(row.employee)
+			day_rate = salary_slip.gross_pay / salary_slip.total_working_days
+			shift_hours = get_shift_for_late_entry(row.employee,start_date,end_date)
+			hourly_rate = 0
+			if not shift_hours == False and shift_hours > 0:
+				hourly_rate = flt(day_rate) / flt(shift_hours)
+				amount = hourly_rate * row.hours
+				add_deduction_for_late_entry(row.employee,end_date,amount)
+			else:
+				frappe.throw(_("Employee {0} Shift Not Define").format(row.employee))
+		except Exception as e:
+			frappe.log_error(frappe.get_traceback())
+
+def get_shift_for_late_entry(employee,start_date,end_date):
+	shift_data = frappe.db.sql("""select shift from `tabAttendance` where attendance_date between %s and %s limit 1""",(start_date,end_date),as_dict=1)
+	if shift_data:
+		if not shift_data[0].shift == None:
+			shift = frappe.get_doc("Shift Type",shift_data[0].shift)
+			return flt(time_diff_in_hours(shift.start_time,shift.end_time)) / 60
+		else:
+			default_shift = frappe.db.get_value("Employee",employee,"default_shift")
+			if default_shift:
+				shift = frappe.get_doc("Shift Type",default_shift)
+				return flt(time_diff_in_hours(shift.start_time,shift.end_time)) / 60
+			else:
+				return False
+	else:
+		return False
+
+def add_deduction_for_late_entry(employee,date,amount):
+	doc = frappe.get_doc(dict(
+		doctype = "Additional Salary",
+		payroll_date = date,
+		employee = employee,
+		company = frappe.db.get_value("Global Defaults","Global Defaults","default_company"),
+		salary_component = frappe.db.get_single_value('Late Entry Policies', 'late_entry_deduction_component'),
+		amount = amount,
+		overwrite_salary_structure_amount = 1
+	)).insert(ignore_permissions = True)
+	doc.submit()
+
+
+@frappe.whitelist()
+def get_last_id_attendance():
+	return frappe.db.get_value("Attendance Machine Settings","Attendance Machine Settings","last_number")

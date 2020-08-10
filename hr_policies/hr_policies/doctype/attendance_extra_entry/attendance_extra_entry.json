@@ -7,7 +7,8 @@
   "employee",
   "is_labour",
   "is_employee",
-  "hours"
+  "hours",
+  "date"
  ],
  "fields": [
   {
@@ -32,9 +33,14 @@
    "fieldname": "hours",
    "fieldtype": "Float",
    "label": "Hours"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
   }
  ],
- "modified": "2020-08-08 23:11:11.317659",
+ "modified": "2020-08-09 17:10:54.223396",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Attendance Extra Entry",

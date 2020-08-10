@@ -298,6 +298,7 @@ def add_attendance_log():
 					machine_id = row[0]
 
 				)).insert(ignore_permissions = True)
+		frappe.db.set_value("Attendance Machine Settings","Attendance Machine Settings","last_number",last_row_machine_id)
 		return last_row_machine_id
 	except Exception as e:
 		frappe.log_error(frappe.get_traceback())
@@ -310,3 +311,9 @@ def get_request_form_data():
 		data = frappe.local.form_dict.data
 
 	return frappe.parse_json(data)
+
+@frappe.whitelist()
+def preview_salary_slip_for_late_entry(employee):
+	sal_st = get_sal_structure(employee)
+	salary_slip = make_salary_slip(sal_st, employee=employee,ignore_permissions=True)
+	return salary_slip

@@ -57,6 +57,20 @@ def get_data():
                                         "label": "Attendance Policies",
                                         "description": _("Attendance Policies"),
                                         "onboard": 1
+                                },
+				{
+                                        "type": "doctype",
+                                        "name": "Attendance Machine Settings",
+                                        "label": "Attendance Machine Settings",
+                                        "description": _("Attendance Machine Settings"),
+                                        "onboard": 1
+                                },
+				{
+                                        "type": "doctype",
+                                        "name": "Late Entry Policies",
+                                        "label": "Late Entry Policies",
+                                        "description": _("Late Entry Policies"),
+                                        "onboard": 1
                                 }
 			]
 		},
@@ -125,6 +139,13 @@ def get_data():
                                         "name": "Overtime Application",
                                         "label": "Overtime Application",
                                         "description": _("Overtime Application"),
+                                        "onboard": 1
+                                },
+				{
+                                        "type": "doctype",
+                                        "name": "Overtime Policies",
+                                        "label": "Overtime Policies",
+                                        "description": _("Overtime Policies"),
                                         "onboard": 1
                                 }
                         ]
