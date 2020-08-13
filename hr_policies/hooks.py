@@ -153,8 +153,11 @@ scheduler_events = {
 			"hr_policies.hr_policies.doctype.gate_pass.gate_pass.insertGP",
 			"hr_policies.hr_policies.doctype.gate_pass.gate_pass.insertOT",
 			"hr_policies.attendance_integration.add_late_entry_deduction"
-        ]
-    }
+		],
+		"0 12 * * *":[
+			"hr_policies.attendance_integration.process_attendance"
+		]
+	}
 
 }
 

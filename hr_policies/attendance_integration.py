@@ -43,23 +43,26 @@ def get_employee_from_card(card):
 
 @frappe.whitelist()
 def process_attendance():
-	shift_data = frappe.get_all("Shift Type",filters={},fields=["name","start_time","end_time"])
-	for shift in shift_data:
-		filters = {
-			"shift":shift.name
-		}
-		attendance_log = frappe.get_all("Attendance Log",fields="*",filters=filters, order_by="employee,attendance_time")
-		for key, group in itertools.groupby(attendance_log, key=lambda x: (x['employee'], x['shift_start_time'])):
-			print(key)
-			# frappe.errprint(list(group))
-			logs = list(group)
-			if logs:
-				try:
-					in_time,out_time,total_hours,early_exit,late_entry,miss_punch = get_attendance_details(shift,logs)
-					create_attendance(logs[0].employee,getdate(logs[0].attendance_time),in_time,out_time,total_hours,early_exit,late_entry,miss_punch,shift)
-				except Exception as e:
-					frappe.log_error(frappe.get_traceback())
-
+	try:
+		shift_data = frappe.get_all("Shift Type",filters={},fields=["name","start_time","end_time"])
+		for shift in shift_data:
+			# filters = {
+			# 	"shift":shift.name
+			# }
+			attendance_log = frappe.db.sql("""select * from `tabAttendance Log` where shift=%s and Date(attendance_time)=%s order by employee,attendance_time""",(shift.name,add_days(today(),-1)),as_dict=1)
+			# attendance_log = frappe.get_all("Attendance Log",fields="*",filters=filters, order_by="employee,attendance_time")
+			for key, group in itertools.groupby(attendance_log, key=lambda x: (x['employee'], x['shift_start_time'])):
+				print(key)
+				# frappe.errprint(list(group))
+				logs = list(group)
+				if logs:
+					try:
+						in_time,out_time,total_hours,early_exit,late_entry,miss_punch = get_attendance_details(shift,logs)
+						create_attendance(logs[0].employee,getdate(logs[0].attendance_time),in_time,out_time,total_hours,early_exit,late_entry,miss_punch,shift)
+					except Exception as e:
+						frappe.log_error(frappe.get_traceback())
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback())
 
 def get_attendance_details(shift_details,logs):
 	print('in')
