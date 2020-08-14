@@ -15,16 +15,15 @@ def get_column():
         return [_("Employee") + ":Link/Employee:150",
 		_("Employee Name") + ":Data:150",
                 _("Card No") + ":Data:100",
+		_("Date") + ":Date:100",
 		_("Shift Start Time") + ":Time:150",
 		_("Shift End Time") + ":Time:150",
                 _("Punch") + ":Data:100",
-		_("Date") + ":Date:100",
 		_("Punch Time") + ":Time:100"]
 
 def get_data(conditions,filters):
         invoice = frappe.db.sql("""select employee as 'emp',(select employee_name from `tabEmployee` where name = emp),card_no,
-				shift_start_time,shift_end_time,attendance_type,
-				date(attendance_time),time(attendance_time)
+				date(attendance_time),shift_start_time,shift_end_time,attendance_type,time(attendance_time)
 				from `tabAttendance Log` where docstatus = 0 %s;"""%conditions, filters, as_list=1)
         return invoice
 
