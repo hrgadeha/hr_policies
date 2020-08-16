@@ -317,3 +317,10 @@ def preview_salary_slip_for_late_entry(employee):
 	sal_st = get_sal_structure(employee)
 	salary_slip = make_salary_slip(sal_st, employee=employee,ignore_permissions=True)
 	return salary_slip
+
+
+@frappe.whitelist()
+def updateShift(doc,method):
+	emp = frappe.get_doc("Employee", doc.employee)
+	emp.default_shift = doc.shift_type
+	emp.save()

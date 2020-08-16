@@ -103,7 +103,10 @@ doc_events = {
 	},
 	"Attendance":{
 		"on_submit":"hr_policies.attendance_integration.add_late_entry"
-	}
+	},
+	"Shift Assignment":{
+                "on_submit":"hr_policies.custom_validate.updateShift"
+        }
 }
 
 fixtures = [
