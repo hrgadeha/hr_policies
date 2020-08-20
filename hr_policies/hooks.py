@@ -110,7 +110,19 @@ doc_events = {
 }
 
 fixtures = [
-    {
+	{
+	"doctype": "Role",
+	"filters": [
+            [
+		"name",
+		"in",
+		[
+			 "HR Master Manager"
+	    ]
+	]
+	]
+	},
+	{
         "doctype": "Custom Field",
         "filters": [
             [
@@ -159,10 +171,10 @@ scheduler_events = {
 		],
 		"0 12 * * *":[
 			"hr_policies.attendance_integration.process_attendance"
-		],
-		"00 14 * * *":[
-			"hr_policies.attendance_integration.process_attendance"
 		]
+#		"00 14 * * *":[
+#			"hr_policies.attendance_integration.process_attendance"
+#		]
 	}
 
 }

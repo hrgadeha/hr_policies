@@ -77,6 +77,7 @@ def process_attendance(date=None):
 
 def get_attendance_details(shift_details,logs):
 	print('in')
+	late_allowance_for = frappe.db.get_value("Attendance Policies","Attendance Policies","late_allowance_for")
 	last_logs = logs
 	total_hours = 0
 	in_time = out_time = None
@@ -94,7 +95,7 @@ def get_attendance_details(shift_details,logs):
 	while len(logs) >= 2:
 		total_hours += time_diff_in_hours(logs[0].attendance_time,logs[1].attendance_time)
 		del logs[:2]
-	if get_time(in_time) > get_time(shift_details.start_time):
+	if get_time(in_time) > get_time(shift_details.start_time) and time_diff_in_hours(str(shift_details.start_time),str(in_time)) > flt(late_allowance_for):
 		print('late_entry')
 		if last_logs:
 			gate_pass_details = get_gatepass_details(last_logs[0].employee,getdate(last_logs[0].attendance_time))
