@@ -39,7 +39,7 @@
   }
  ],
  "issingle": 1,
- "modified": "2020-07-20 13:56:10.716268",
+ "modified": "2020-08-20 12:05:59.466161",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Advance Salary Policies",
@@ -51,7 +51,7 @@
    "email": 1,
    "print": 1,
    "read": 1,
-   "role": "System Manager",
+   "role": "HR Master Manager",
    "share": 1,
    "write": 1
   }

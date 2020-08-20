@@ -185,7 +185,7 @@
   }
  ],
  "is_submittable": 1,
- "modified": "2020-08-09 11:53:13.708246",
+ "modified": "2020-08-20 12:05:08.543729",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Gate Pass",
@@ -200,7 +200,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "System Manager",
+   "role": "HR Master Manager",
    "share": 1,
    "submit": 1,
    "write": 1

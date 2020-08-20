@@ -42,14 +42,25 @@ def get_employee_from_card(card):
 		return False
 
 @frappe.whitelist()
-def process_attendance():
+def run_attendance_manually():
+	start_date = '2020-07-01'
+	end_date = '2020-07-31'
+	while getdate(start_date) <= getdate(end_date):
+		print('Attendance Process Start For Date ' + str(start_date))
+		process_attendance(start_date)
+		start_date = add_days(start_date,1)
+
+@frappe.whitelist()
+def process_attendance(date=None):
 	try:
+		if date == None:
+			date = add_days(today(),-1)
 		shift_data = frappe.get_all("Shift Type",filters={},fields=["name","start_time","end_time"])
 		for shift in shift_data:
 			# filters = {
 			# 	"shift":shift.name
 			# }
-			attendance_log = frappe.db.sql("""select * from `tabAttendance Log` where shift=%s and Date(attendance_time)=%s order by employee,attendance_time""",(shift.name,add_days(today(),-1)),as_dict=1)
+			attendance_log = frappe.db.sql("""select * from `tabAttendance Log` where shift=%s and Date(attendance_time)=%s order by employee,attendance_time""",(shift.name,date),as_dict=1)
 			# attendance_log = frappe.get_all("Attendance Log",fields="*",filters=filters, order_by="employee,attendance_time")
 			for key, group in itertools.groupby(attendance_log, key=lambda x: (x['employee'], x['shift_start_time'])):
 				print(key)

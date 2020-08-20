@@ -70,7 +70,7 @@
   }
  ],
  "is_submittable": 1,
- "modified": "2020-07-12 17:25:49.765324",
+ "modified": "2020-08-20 12:05:22.776133",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Change Loan Guarantor",
@@ -84,7 +84,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "System Manager",
+   "role": "HR Master Manager",
    "share": 1,
    "write": 1
   }

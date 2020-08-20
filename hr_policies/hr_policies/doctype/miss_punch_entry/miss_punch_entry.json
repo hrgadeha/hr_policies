@@ -51,7 +51,7 @@
    "label": "Last Punch Type"
   }
  ],
- "modified": "2020-08-07 01:56:15.018503",
+ "modified": "2020-08-20 12:06:17.754742",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Miss Punch Entry",
@@ -65,7 +65,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "System Manager",
+   "role": "HR Master Manager",
    "share": 1,
    "write": 1
   }

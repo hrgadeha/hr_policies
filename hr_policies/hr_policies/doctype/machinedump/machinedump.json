@@ -13,7 +13,7 @@
    "label": "Data"
   }
  ],
- "modified": "2020-07-30 03:19:44.070664",
+ "modified": "2020-08-20 12:06:05.264674",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "MachineDump",
@@ -27,7 +27,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "System Manager",
+   "role": "HR Master Manager",
    "share": 1,
    "write": 1
   }

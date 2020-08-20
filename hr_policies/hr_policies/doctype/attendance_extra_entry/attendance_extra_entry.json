@@ -48,7 +48,7 @@
    "options": "\nLate Entry\nEarly Exit\nLess Hours By Labour"
   }
  ],
- "modified": "2020-08-17 12:58:48.967577",
+ "modified": "2020-08-20 12:04:28.828405",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Attendance Extra Entry",
@@ -56,13 +56,12 @@
  "permissions": [
   {
    "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "System Manager",
+   "role": "HR Master Manager",
    "share": 1,
    "write": 1
   }

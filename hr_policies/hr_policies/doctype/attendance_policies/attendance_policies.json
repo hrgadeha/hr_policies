@@ -20,7 +20,7 @@
   }
  ],
  "issingle": 1,
- "modified": "2020-08-08 23:23:23.335536",
+ "modified": "2020-08-20 12:06:28.274902",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Attendance Policies",
@@ -32,7 +32,7 @@
    "email": 1,
    "print": 1,
    "read": 1,
-   "role": "System Manager",
+   "role": "HR Master Manager",
    "share": 1,
    "write": 1
   }
