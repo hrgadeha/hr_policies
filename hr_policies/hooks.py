@@ -102,11 +102,12 @@ doc_events = {
 		"before_insert":"hr_policies.attendance_integration.update_attendance_log"
 	},
 	"Attendance":{
-		"on_submit":"hr_policies.attendance_integration.add_late_entry"
+		"on_submit":"hr_policies.attendance_integration.add_late_entry",
+		"before_submit":"hr_policies.process_attendance.process_sandwich_leave"
 	},
 	"Shift Assignment":{
-                "on_submit":"hr_policies.custom_validate.updateShift"
-        }
+		"on_submit":"hr_policies.custom_validate.updateShift"
+	}
 }
 
 fixtures = [
@@ -171,6 +172,9 @@ scheduler_events = {
 		],
 		"0 12 * * *":[
 			"hr_policies.attendance_integration.process_attendance"
+		],
+		"30 23 * * Sun":[
+			"hr_policies.process_attendance.process_sandwich_leave_weekly"
 		]
 #		"00 14 * * *":[
 #			"hr_policies.attendance_integration.process_attendance"

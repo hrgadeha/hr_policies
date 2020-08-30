@@ -56,6 +56,7 @@ def process_attendance(date=None):
 		if date == None:
 			date = add_days(today(),-1)
 		shift_data = frappe.get_all("Shift Type",filters={},fields=["name","start_time","end_time"])
+		employee_list_logs = []
 		for shift in shift_data:
 			# filters = {
 			# 	"shift":shift.name
@@ -70,10 +71,22 @@ def process_attendance(date=None):
 					try:
 						in_time,out_time,total_hours,early_exit,late_entry,miss_punch = get_attendance_details(shift,logs)
 						create_attendance(logs[0].employee,getdate(logs[0].attendance_time),in_time,out_time,total_hours,early_exit,late_entry,miss_punch,shift)
+						employee_list_logs.append(logs[0].employee)
 					except Exception as e:
 						frappe.log_error(frappe.get_traceback())
+		create_lwp_for_missing_employee(employee_list_logs,date)
 	except Exception as e:
 		frappe.log_error(frappe.get_traceback())
+
+def create_lwp_for_missing_employee(employee_list_logs,date):
+	employees = get_employees()
+	for employee in employees:
+		if not employees.name in employee_list_logs:
+			create_leave(employee.name,date,0)
+
+def get_employees():
+	employee_list = frappe.get_all("Employee",filters={"status":"Active"},fields=["name"])
+	return employee_list or []
 
 def get_attendance_details(shift_details,logs):
 	print('in')
@@ -186,10 +199,9 @@ def time_diff_in_hours(start, end):
 
 @frappe.whitelist()
 def add_late_entry(self,method):
-	frappe.msgprint('call')
 	import math
-	att_settings = frappe.get_doc("Attendance Policies","Attendance Policies")
-	if self.employee and self.late_entry == 1:
+	if not self.status in ["On Leave","Half Day"]:
+		att_settings = frappe.get_doc("Attendance Policies","Attendance Policies")
 		is_labour = frappe.db.get_value("Employee",self.employee,"is_labour")
 		if is_labour:
 			if flt(self.office_hours) > flt(self.working_hours):
@@ -197,35 +209,68 @@ def add_late_entry(self,method):
 				if late_hours > 0:
 					create_extra_entry(self.employee,self.attendance_date,1,0,late_hours,'Less Hours By Labour')
 		else:
-			is_employee = frappe.db.get_value("Employee",self.employee,"is_employee")
-			if is_employee:
-				late_mins = time_diff_in_hours(str(frappe.db.get_value("Shift Type",self.shift,"start_time")),str(self.in_time))
-				if self.early_exit == 1:
-					early_exit_min = time_diff_in_hours(str(self.out_time),str(frappe.db.get_value("Shift Type",self.shift,"end_time")))
-					if early_exit_min > 0:
-						create_extra_entry(self.employee,self.attendance_date,0,1,flt(early_exit_min)/60,'Early Exit')
-				if flt(late_mins) >=  flt(att_settings.late_allowance_for) and flt(late_mins) <= flt(att_settings.max_late_allowance_for):
-					# if self.early_exit == 1:
-					# 	early_exit_min = time_diff_in_hours(str(frappe.db.get_value("Shift Type",self.shift,"end_time")),str(self.out_time))
-					# late_mins += flt(early_exit_min)
-					create_extra_entry(self.employee,self.attendance_date,0,1,flt(late_mins)/60,'Late Entry')
-				else:
-					if flt(late_mins) > flt(att_settings.max_late_allowance_for):
-						create_leave(employee,date)
+			get_late_entry_details(self)
+
+def get_late_entry_details(self):
+	late_entry = False
+	shift_start = frappe.db.get_value("Shift Type",self.shift,"start_time")
+	shift_end = frappe.db.get_value("Shift Type",self.shift,"end_time")
+	att_settings = frappe.get_doc("Attendance Policies","Attendance Policies")
+	if get_time(self.in_time) > get_time(shift_start):
+		late_entry = True
+	if late_entry == True:
+		deduction_mins = 0
+		late_mins = time_diff_in_hours(str(shift_start),str(self.in_time))
+		if late_mins < flt(att_settings.late_allowance_for) and flt(self.working_hours) >= flt(self.office_hours):
+			return
+		shift_total_mins = time_diff_in_hours(str(shift_start),str(shift_end))
+		deduction_mins += time_diff_in_hours(str(shift_start),str(self.in_time))
+		if get_time(self.out_time) < get_time(shift_end):
+			deduction_mins += flt(time_diff_in_hours(str(self.out_time),str(shift_end)))
+		shift_half_day_mins = flt(shift_total_mins) / 2
+		if flt(deduction_mins) > flt(shift_half_day_mins):
+			self.status = "On Leave"
+			frappe.db.set_value("Attendance",self.name,"status","On Leave")
+			create_leave(self.employee,self.attendance_date,0)
+		elif flt(att_settings.max_late_allowance_for) < deduction_mins and flt(deduction_mins) <= flt(shift_half_day_mins):
+			self.status = "Half Day"
+			frappe.db.set_value("Attendance",self.name,"status","Half Day")
+			create_leave(self.employee,self.attendance_date,1)
+		elif flt(deduction_mins) >=  flt(att_settings.late_allowance_for) and flt(deduction_mins) <= flt(att_settings.max_late_allowance_for):
+			create_extra_entry(self.employee,self.attendance_date,0,1,flt(shift_total_mins*0.25)/60,'Late Entry')
+		else:
+			if deduction_mins > 0:
+				create_extra_entry(self.employee,self.attendance_date,0,1,flt(shift_total_mins*0.25)/60,'Late Entry')
 	else:
-		is_employee = frappe.db.get_value("Employee",self.employee,"is_employee")
-		if is_employee and self.early_exit == 1:
-			early_exit_min = time_diff_in_hours(str(frappe.db.get_value("Shift Type",self.shift,"end_time")),str(self.out_time))
-			if early_exit_min > 0:
-				create_extra_entry(self.employee,self.attendance_date,0,1,flt(early_exit_min)/60,'Early Exit')		
+		if get_time(self.out_time) < get_time(shift_end):
+			deduction_mins = 0
+			late_mins = time_diff_in_hours(str(self.out_time),str(shift_end))
+			if late_mins < flt(att_settings.late_allowance_for) and flt(self.working_hours) >= flt(self.office_hours):
+				return
+			shift_total_mins = time_diff_in_hours(str(shift_start),str(shift_end))
+			deduction_mins += time_diff_in_hours(str(self.out_time),str(shift_end))
+			shift_half_day_mins = flt(shift_total_mins) / 2
+			if flt(deduction_mins) > flt(shift_half_day_mins):
+				self.status = "On Leave"
+				frappe.db.set_value("Attendance",self.name,"status","On Leave")
+				create_leave(self.employee,self.attendance_date,0)
+			elif flt(att_settings.max_late_allowance_for) < deduction_mins and flt(deduction_mins) <= flt(shift_half_day_mins):
+				self.status = "Half Day"
+				frappe.db.set_value("Attendance",self.name,"status","Half Day")
+				create_leave(self.employee,self.attendance_date,1)
+			elif flt(deduction_mins) >=  flt(att_settings.late_allowance_for) and flt(deduction_mins) <= flt(att_settings.max_late_allowance_for):
+				create_extra_entry(self.employee,self.attendance_date,0,1,flt(shift_total_mins*0.25)/60,'Late Entry')
+			else:
+				if deduction_mins > 0:
+					create_extra_entry(self.employee,self.attendance_date,0,1,flt(shift_total_mins*0.25)/60,'Late Entry')		
 
-
-def create_leave(employee,date):
+def create_leave(employee,date,half_day):
 	doc = frappe.get_doc(dict(
 		doctype = "Leave Application",
+		employee = employee,
 		from_date = date,
 		to_date = date,
-		half_day = 1,
+		half_day = half_day,
 		leave_type = "Leave Without Pay",
 		leave_approver = frappe.db.get_value("Employee",employee,"leave_approver")
 	)).insert(ignore_permissions = True)
