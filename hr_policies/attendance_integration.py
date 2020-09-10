@@ -9,6 +9,7 @@ from erpnext.hr.doctype.employee.employee import get_holiday_list_for_employee
 import json
 from ast import literal_eval
 import itertools
+from datetime import datetime, timedelta
 
 @frappe.whitelist()
 def update_attendance_log(self,method):
@@ -70,7 +71,11 @@ def process_attendance(date=None):
 				if logs:
 					try:
 						in_time,out_time,total_hours,early_exit,late_entry,miss_punch = get_attendance_details(shift,logs)
-						create_attendance(logs[0].employee,getdate(logs[0].attendance_time),in_time,out_time,total_hours,early_exit,late_entry,miss_punch,shift)
+						holiday_list = get_holiday_list_for_employee(logs[0].employee)
+						if check_holiday(getdate(logs[0].attendance_time),holiday_list):
+							create_holiday_attendance(logs[0].employee,getdate(logs[0].attendance_time),in_time,out_time,total_hours)
+						else:
+							create_attendance(logs[0].employee,getdate(logs[0].attendance_time),in_time,out_time,total_hours,early_exit,late_entry,miss_punch,shift)
 						employee_list_logs.append(logs[0].employee)
 					except Exception as e:
 						frappe.log_error(frappe.get_traceback())
@@ -83,6 +88,13 @@ def create_lwp_for_missing_employee(employee_list_logs,date):
 	for employee in employees:
 		if not employees.name in employee_list_logs:
 			create_leave(employee.name,date,0)
+
+def check_holiday(date,holiday):
+	holiday = frappe.db.sql("""select holiday_date from `tabHoliday` where holiday_date=%s and parent=%s""",(date,holiday),as_dict=1)
+	if len(holiday) >= 1:
+		return True
+	else:
+		return False
 
 def get_employees():
 	employee_list = frappe.get_all("Employee",filters={"status":"Active"},fields=["name"])
@@ -137,6 +149,16 @@ def create_miss_punch_entry(employee,attendance_date,last_punch_type,last_punch_
 		attendance_date = attendance_date,
 		last_punch_time = last_punch_time,
 		last_punch_type = last_punch_type
+	)).insert(ignore_permissions = True)
+
+def create_holiday_attendance(employee,attendance_date,in_time,out_time,total_hours):
+	attendance_doc = frappe.get_doc(dict(
+		doctype = "Holiday Attendance",
+		employee = employee,
+		date = attendance_date,
+		punch_in = in_time,
+		punch_out = out_time,
+		total_working_hours = total_hours
 	)).insert(ignore_permissions = True)
 
 def create_attendance(employee,attendance_date,in_time,out_time,total_hours,early_exit,late_entry,miss_punch,shift):

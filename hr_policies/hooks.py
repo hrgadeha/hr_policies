@@ -91,7 +91,8 @@ doc_events = {
 		"validate": "hr_policies.custom_validate.validate_guarantor"
 	},
 	"Employee": {
-		"on_change": "hr_policies.hr_policies.doctype.referral_bonus_application.referral_bonus_application.updateADS"
+		"on_change": "hr_policies.hr_policies.doctype.referral_bonus_application.referral_bonus_application.updateADS",
+		"validate":"hr_policies.custom_validate.check_guarantor_in_loan"
 	},
 	"Employee Advance": {
 		"validate": "hr_policies.custom_validate.validate_loan_amount_for_advance",
@@ -168,7 +169,8 @@ scheduler_events = {
 		"30 23 1 * *": [
 			"hr_policies.hr_policies.doctype.gate_pass.gate_pass.insertGP",
 			"hr_policies.hr_policies.doctype.gate_pass.gate_pass.insertOT",
-			"hr_policies.attendance_integration.add_late_entry_deduction"
+			"hr_policies.attendance_integration.add_late_entry_deduction",
+			"hr_policies.custom_validate.add_holiday_earning",
 		],
 		"0 12 * * *":[
 			"hr_policies.attendance_integration.process_attendance"

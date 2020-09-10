@@ -1,0 +1,83 @@
+{
+ "autoname": "HOL-AD-.####",
+ "creation": "2020-08-30 22:53:12.963688",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "date",
+  "punch_in",
+  "punch_out",
+  "column_break_5",
+  "total_working_hours",
+  "added"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "read_only": 1
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "punch_in",
+   "fieldtype": "Time",
+   "label": "Punch In",
+   "read_only": 1
+  },
+  {
+   "fieldname": "punch_out",
+   "fieldtype": "Time",
+   "label": "Punch Out",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_working_hours",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Total Working Hours",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "added",
+   "fieldtype": "Check",
+   "label": "Added"
+  }
+ ],
+ "modified": "2020-09-10 16:00:22.894556",
+ "modified_by": "Administrator",
+ "module": "Hr Policies",
+ "name": "Holiday Attendance",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
