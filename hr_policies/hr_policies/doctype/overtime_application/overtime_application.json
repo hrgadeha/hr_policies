@@ -7,6 +7,7 @@
  "field_order": [
   "employee",
   "employee_name",
+  "department",
   "column_break_3",
   "company",
   "request_date",
@@ -98,10 +99,18 @@
    "fieldtype": "Link",
    "label": "Company",
    "options": "Company"
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
- "modified": "2020-08-20 12:04:51.835318",
+ "modified": "2020-09-17 14:57:58.669633",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Overtime Application",

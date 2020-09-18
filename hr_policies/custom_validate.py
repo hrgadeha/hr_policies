@@ -393,3 +393,13 @@ def add_holiday_earning():
 			ot = frappe.get_doc("Holiday Attendance", i[0])
 			ot.added = 1
 			ot.save(ignore_permissions=True)
+
+
+@frappe.whitelist()
+def add_1_day_in_leave():
+	for d in frappe.get_list("Leave Allocation", fields=("name"), filters={"docstatus": 1 }):
+		if d:
+			doc = frappe.get_doc("Leave Allocation", d)
+			doc.new_leaves_allocated += 1
+			doc.total_leaves_allocated += 1
+			doc.save()

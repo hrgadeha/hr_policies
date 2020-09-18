@@ -151,6 +151,19 @@ def create_miss_punch_entry(employee,attendance_date,last_punch_type,last_punch_
 		last_punch_type = last_punch_type
 	)).insert(ignore_permissions = True)
 
+
+	doc = frappe.get_doc(dict(
+		doctype = "Leave Application",
+		employee = employee,
+		leave_type = "Leave Without Pay",
+		from_date = attendance_date,
+		to_date = attendance_date,
+		posting_date = attendance_date,
+		company = frappe.db.get_single_value('Global Defaults', 'default_company')
+	)).insert(ignore_permissions = True,ignore_mandatory = True)
+
+
+
 def create_holiday_attendance(employee,attendance_date,in_time,out_time,total_hours):
 	attendance_doc = frappe.get_doc(dict(
 		doctype = "Holiday Attendance",

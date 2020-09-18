@@ -15,6 +15,7 @@
   {
    "fieldname": "employee",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Employee",
    "options": "Employee"
   },
@@ -38,6 +39,7 @@
   {
    "fieldname": "date",
    "fieldtype": "Date",
+   "in_standard_filter": 1,
    "label": "Date"
   },
   {
@@ -48,7 +50,7 @@
    "options": "\nLate Entry\nEarly Exit\nLess Hours By Labour"
   }
  ],
- "modified": "2020-08-20 12:04:28.828405",
+ "modified": "2020-09-17 23:21:50.172089",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Attendance Extra Entry",
