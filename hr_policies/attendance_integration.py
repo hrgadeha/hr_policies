@@ -86,7 +86,7 @@ def process_attendance(date=None):
 def create_lwp_for_missing_employee(employee_list_logs,date):
 	employees = get_employees()
 	for employee in employees:
-		if not employees.name in employee_list_logs:
+		if not employee.name in employee_list_logs:
 			create_leave(employee.name,date,0)
 
 def check_holiday(date,holiday):
@@ -159,6 +159,7 @@ def create_miss_punch_entry(employee,attendance_date,last_punch_type,last_punch_
 		from_date = attendance_date,
 		to_date = attendance_date,
 		posting_date = attendance_date,
+		leave_approver = frappe.db.get_value("Employee",employee,"leave_approver"),
 		company = frappe.db.get_single_value('Global Defaults', 'default_company')
 	)).insert(ignore_permissions = True,ignore_mandatory = True)
 
@@ -300,17 +301,31 @@ def get_late_entry_details(self):
 					create_extra_entry(self.employee,self.attendance_date,0,1,flt(shift_total_mins*0.25)/60,'Late Entry')		
 
 def create_leave(employee,date,half_day):
-	doc = frappe.get_doc(dict(
-		doctype = "Leave Application",
-		employee = employee,
-		from_date = date,
-		to_date = date,
-		half_day = half_day,
-		leave_type = "Leave Without Pay",
-		leave_approver = frappe.db.get_value("Employee",employee,"leave_approver")
-	)).insert(ignore_permissions = True)
-	doc.status = "Approved"
-	doc.submit()
+	if half_day == 1:
+		doc = frappe.get_doc(dict(
+			doctype = "Leave Application",
+			employee = employee,
+			from_date = date,
+			to_date = date,
+			half_day = half_day,
+			leave_type = "Half Day",
+			leave_approver = frappe.db.get_value("Employee",employee,"leave_approver")
+		)).insert(ignore_permissions = True)
+		doc.status = "Approved"
+		doc.submit()
+
+	if half_day == 0:
+		doc = frappe.get_doc(dict(
+			doctype = "Leave Application",
+			employee = employee,
+			from_date = date,
+			to_date = date,
+			half_day = half_day,
+			leave_type = "Leave Without Pay",
+			leave_approver = frappe.db.get_value("Employee",employee,"leave_approver")
+		)).insert(ignore_permissions = True)
+		doc.status = "Approved"
+		doc.submit()
 
 def create_extra_entry(employee,date,is_labour,is_employee,hours,entry_type=None):
 	doc = frappe.get_doc(dict(

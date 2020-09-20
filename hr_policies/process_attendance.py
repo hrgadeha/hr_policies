@@ -82,17 +82,32 @@ def check_leave(self,date):
 		return False
 
 def create_leave(employee,date,half_day):
-	doc = frappe.get_doc(dict(
-		doctype = "Leave Application",
-		employee = employee,
-		from_date = date,
-		to_date = date,
-		half_day = half_day,
-		leave_type = "Leave Without Pay",
-		leave_approver = frappe.db.get_value("Employee",employee,"leave_approver")
-	)).insert(ignore_permissions = True)
-	doc.status = "Approved"
-	doc.submit()
+	if half_day == 1:
+		doc = frappe.get_doc(dict(
+			doctype = "Leave Application",
+			employee = employee,
+			from_date = date,
+			to_date = date,
+			half_day = half_day,
+			leave_type = "Half Day",
+			leave_approver = frappe.db.get_value("Employee",employee,"leave_approver")
+		)).insert(ignore_permissions = True)
+		doc.status = "Approved"
+		doc.submit()
+
+	if half_day == 0:
+		doc = frappe.get_doc(dict(
+			doctype = "Leave Application",
+			employee = employee,
+			from_date = date,
+			to_date = date,
+			half_day = half_day,
+			leave_type = "Leave Without Pay",
+			leave_approver = frappe.db.get_value("Employee",employee,"leave_approver")
+		)).insert(ignore_permissions = True)
+		doc.status = "Approved"
+		doc.submit()
+
 
 def get_employess(from_date,to_date):
 	employee_list = frappe.db.sql("""select distinct employee from `tabLeave Application` where from_date>=%s and to_date<=%s""",(from_date,add_days(to_date,-1)),as_dict=1)
