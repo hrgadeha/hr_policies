@@ -151,6 +151,18 @@ def get_data():
                         ]
                 },
 		{
+                        "label": _("Miss Punch"),
+                        "items": [
+                                {
+                                        "type": "doctype",
+                                        "name": "Miss Punch Application",
+                                        "label": "Miss Punch Application",
+                                        "description": _("Miss Punch Application"),
+                                        "onboard": 1
+                                }
+                        ]
+                },
+		{
                         "label": _("Report"),
                         "items": [
                                 {

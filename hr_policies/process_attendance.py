@@ -25,14 +25,15 @@ def process_sandwich_leave_daily(self):
 			leave_check = True
 	holiday = get_holiday_list_for_employee(self.employee)
 	frappe.errprint(holiday)
-	while check_holiday(last_date,holiday):
-		frappe.errprint('holiday')
-		holiday_date.append(last_date)
-		last_date = add_days(last_date,-1)
-	if len(holiday_date) >= 1:
-		if check_leave(self,last_date):
-			for hd in holiday_date:
-				create_leave(self.employee,hd,0)
+	if on_leave == True:
+		while check_holiday(last_date,holiday):
+			frappe.errprint('holiday')
+			holiday_date.append(last_date)
+			last_date = add_days(last_date,-1)
+		if len(holiday_date) >= 1:
+			if check_leave(self,last_date):
+				for hd in holiday_date:
+					create_leave(self.employee,hd,0)
 
 @frappe.whitelist()
 def process_sandwich_leave_weekly():

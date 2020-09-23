@@ -44,8 +44,8 @@ def get_employee_from_card(card):
 
 @frappe.whitelist()
 def run_attendance_manually():
-	start_date = '2020-07-01'
-	end_date = '2020-07-31'
+	start_date = '2020-08-01'
+	end_date = '2020-08-10'
 	while getdate(start_date) <= getdate(end_date):
 		print('Attendance Process Start For Date ' + str(start_date))
 		process_attendance(start_date)
@@ -86,7 +86,9 @@ def process_attendance(date=None):
 def create_lwp_for_missing_employee(employee_list_logs,date):
 	employees = get_employees()
 	for employee in employees:
-		if not employee.name in employee_list_logs:
+		holiday = get_holiday_list_for_employee(employee.name)
+		if not employee.name in employee_list_logs and not check_holiday(date,holiday):
+			print(employee.name)
 			create_leave(employee.name,date,0)
 
 def check_holiday(date,holiday):
