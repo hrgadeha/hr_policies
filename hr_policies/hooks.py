@@ -178,9 +178,6 @@ scheduler_events = {
 		"30 23 * * Sun":[
 			"hr_policies.process_attendance.process_sandwich_leave_weekly"
 		]
-#		"00 14 * * *":[
-#			"hr_policies.attendance_integration.process_attendance"
-#		]
 	}
 
 }
