@@ -272,7 +272,7 @@ def get_hourly_rate(employee):
 	gross_pay = preview_salary_slip(employee)
 	working_days = preview_working_days(employee)
 
-	hours = frappe.db.sql("""select office_hours from `tabAttendance` where docstatus = 1 and employee = %s order by name desc 
+	hours = frappe.db.sql("""select office_hours from `tabAttendance` where docstatus = 1 and employee = %s order by creation desc 
 			limit 1;""",(employee))
 
 	eligible_dict = dict(

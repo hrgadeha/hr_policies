@@ -174,7 +174,7 @@ def create_holiday_attendance(employee,attendance_date,in_time,out_time,total_ho
 		date = attendance_date,
 		punch_in = in_time,
 		punch_out = out_time,
-		total_working_hours = total_hours
+		total_working_hours = total_hours / 60
 	)).insert(ignore_permissions = True)
 
 def create_attendance(employee,attendance_date,in_time,out_time,total_hours,early_exit,late_entry,miss_punch,shift):
