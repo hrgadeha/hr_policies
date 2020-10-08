@@ -44,8 +44,8 @@ def get_employee_from_card(card):
 
 @frappe.whitelist()
 def run_attendance_manually():
-	start_date = '2020-08-01'
-	end_date = '2020-08-10'
+	start_date = '2020-09-09'
+	end_date = '2020-09-11'
 	while getdate(start_date) <= getdate(end_date):
 		print('Attendance Process Start For Date ' + str(start_date))
 		process_attendance(start_date)
@@ -64,6 +64,7 @@ def process_attendance(date=None):
 			# }
 			attendance_log = frappe.db.sql("""select * from `tabAttendance Log` where shift=%s and Date(attendance_time)=%s order by employee,attendance_time""",(shift.name,date),as_dict=1)
 			# attendance_log = frappe.get_all("Attendance Log",fields="*",filters=filters, order_by="employee,attendance_time")
+			print(attendance_log)
 			for key, group in itertools.groupby(attendance_log, key=lambda x: (x['employee'], x['shift_start_time'])):
 				print(key)
 				# frappe.errprint(list(group))
@@ -78,6 +79,7 @@ def process_attendance(date=None):
 							create_attendance(logs[0].employee,getdate(logs[0].attendance_time),in_time,out_time,total_hours,early_exit,late_entry,miss_punch,shift)
 						employee_list_logs.append(logs[0].employee)
 					except Exception as e:
+						print('exception')
 						frappe.log_error(frappe.get_traceback())
 		create_lwp_for_missing_employee(employee_list_logs,date)
 	except Exception as e:
@@ -161,6 +163,7 @@ def create_miss_punch_entry(employee,attendance_date,last_punch_type,last_punch_
 		from_date = attendance_date,
 		to_date = attendance_date,
 		posting_date = attendance_date,
+		follow_via_email = 0,
 		leave_approver = frappe.db.get_value("Employee",employee,"leave_approver"),
 		company = frappe.db.get_single_value('Global Defaults', 'default_company')
 	)).insert(ignore_permissions = True,ignore_mandatory = True)
@@ -311,6 +314,7 @@ def create_leave(employee,date,half_day):
 			to_date = date,
 			half_day = half_day,
 			leave_type = "Half Day",
+			follow_via_email = 0,
 			leave_approver = frappe.db.get_value("Employee",employee,"leave_approver")
 		)).insert(ignore_permissions = True)
 		doc.status = "Approved"
@@ -324,6 +328,7 @@ def create_leave(employee,date,half_day):
 			to_date = date,
 			half_day = half_day,
 			leave_type = "Leave Without Pay",
+			follow_via_email = 0,
 			leave_approver = frappe.db.get_value("Employee",employee,"leave_approver")
 		)).insert(ignore_permissions = True)
 		doc.status = "Approved"

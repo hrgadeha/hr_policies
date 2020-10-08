@@ -91,6 +91,7 @@ def create_leave(employee,date,half_day):
 			to_date = date,
 			half_day = half_day,
 			leave_type = "Half Day",
+			follow_via_email = 0,
 			leave_approver = frappe.db.get_value("Employee",employee,"leave_approver")
 		)).insert(ignore_permissions = True)
 		doc.status = "Approved"
@@ -104,6 +105,7 @@ def create_leave(employee,date,half_day):
 			to_date = date,
 			half_day = half_day,
 			leave_type = "Leave Without Pay",
+			follow_via_email = 0,
 			leave_approver = frappe.db.get_value("Employee",employee,"leave_approver")
 		)).insert(ignore_permissions = True)
 		doc.status = "Approved"
