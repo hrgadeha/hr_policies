@@ -186,7 +186,7 @@ scheduler_events = {
 			"hr_policies.attendance_integration.add_late_entry_deduction",
 			"hr_policies.custom_validate.add_holiday_earning",
 		],
-		"0 12 * * *":[
+		"0 9 * * *":[
 			"hr_policies.attendance_integration.process_attendance"
 		],
 		"30 23 * * Sun":[

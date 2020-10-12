@@ -44,8 +44,8 @@ def get_employee_from_card(card):
 
 @frappe.whitelist()
 def run_attendance_manually():
-	start_date = '2020-09-09'
-	end_date = '2020-09-11'
+	start_date = '2020-09-29'
+	end_date = '2020-09-30'
 	while getdate(start_date) <= getdate(end_date):
 		print('Attendance Process Start For Date ' + str(start_date))
 		process_attendance(start_date)
@@ -101,7 +101,9 @@ def check_holiday(date,holiday):
 		return False
 
 def get_employees():
-	employee_list = frappe.get_all("Employee",filters={"status":"Active"},fields=["name"])
+	employee_list = frappe.db.sql("""select name from `tabEmployee` where status = "Active" and
+		(name not like '%MPP%' or name not like '%MDPL%');""", as_list=1)
+#	employee_list = frappe.get_all("Employee",filters={"status":"Active"},fields=["name"])
 	return employee_list or []
 
 def get_attendance_details(shift_details,logs):

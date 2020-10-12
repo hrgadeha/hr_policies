@@ -9,6 +9,9 @@ from frappe.model.document import Document
 class MissPunchApplication(Document):
 	def on_submit(self):
 		if self.action == "Present" and self.attendance:
+			doc = frappe.get_doc("Leave Application", self.leave_application)
+			doc.delete()
+
 			doc = frappe.get_doc("Attendance", self.attendance)
 			doc.status = "Present"
 			doc.save(ignore_permissions=True)
