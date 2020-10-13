@@ -5,17 +5,26 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "application_type",
+  "section_break_2",
   "employee",
   "employee_name",
   "column_break_3",
   "miss_punch_date",
   "section_break_5",
+  "default_shift",
+  "start_time",
+  "end_time",
+  "column_break_11",
+  "office_hours",
+  "section_break_13",
   "last_punch_time",
   "exit_time",
+  "working_hours",
   "reason",
   "attendance",
   "leave_application",
-  "column_break_11",
+  "column_break_20",
   "action",
   "amended_from"
  ],
@@ -54,14 +63,14 @@
   {
    "fieldname": "last_punch_time",
    "fieldtype": "Time",
-   "label": "Last Punch Time",
-   "read_only": 1
+   "label": "Check In",
+   "reqd": 1
   },
   {
    "fieldname": "exit_time",
    "fieldtype": "Time",
    "in_list_view": 1,
-   "label": "Exit Time",
+   "label": "Check Out",
    "reqd": 1
   },
   {
@@ -102,10 +111,63 @@
    "options": "Miss Punch Application",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "working_hours",
+   "fieldtype": "Float",
+   "label": "Working Hours",
+   "read_only": 1
+  },
+  {
+   "fieldname": "office_hours",
+   "fieldtype": "Float",
+   "label": "Office Hours",
+   "read_only": 1
+  },
+  {
+   "fieldname": "application_type",
+   "fieldtype": "Select",
+   "label": "Application Type",
+   "options": "\nMiss Punch\nMachine Off",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "employee.default_shift",
+   "fieldname": "default_shift",
+   "fieldtype": "Link",
+   "label": "Default Shift",
+   "options": "Shift Type",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "default_shift.start_time",
+   "fieldname": "start_time",
+   "fieldtype": "Time",
+   "label": "Start Time",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "default_shift.end_time",
+   "fieldname": "end_time",
+   "fieldtype": "Time",
+   "label": "End Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_13",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_20",
+   "fieldtype": "Column Break"
   }
  ],
  "is_submittable": 1,
- "modified": "2020-09-23 23:45:13.284171",
+ "modified": "2020-10-13 15:36:05.954613",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Miss Punch Application",

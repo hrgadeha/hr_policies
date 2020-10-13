@@ -4,36 +4,66 @@
 
 from __future__ import unicode_literals
 import frappe
+from frappe.utils import formatdate, get_time, time_diff,getdate, get_datetime,get_first_day,get_last_day, nowdate, flt, cint, cstr, add_days, today,month_diff,date_diff,add_months
+from datetime import datetime
 from frappe.model.document import Document
 
 class MissPunchApplication(Document):
+	def validate(self):
+		FMT = '%H:%M:%S'
+		dateTimeDifference = datetime.strptime(self.exit_time, FMT) - datetime.strptime(self.last_punch_time, FMT)
+		self.working_hours =  dateTimeDifference.total_seconds() / 3600
+		dateTimeDifference_shift = self.end_time - self.start_time
+		self.office_hours =  dateTimeDifference_shift.total_seconds() / 3600
+
 	def on_submit(self):
-		if self.action == "Present" and self.attendance:
-			doc = frappe.get_doc("Leave Application", self.leave_application)
-			doc.delete()
+		if self.application_type == "Miss Punch":
+			if self.action == "Present" and self.attendance:
+				doc = frappe.get_doc("Leave Application", self.leave_application)
+				doc.delete()
 
-			doc = frappe.get_doc("Attendance", self.attendance)
-			doc.status = "Present"
-			doc.save(ignore_permissions=True)
-			doc.submit()
+				doc = frappe.get_doc("Attendance", self.attendance)
+				doc.status = "Present"
+				doc.working_hours = self.working_hours
+				doc.in_time = self.last_punch_time
+				doc.out_time = self.exit_time
+				doc.office_hours = self.office_hours
+				doc.shift = self.default_shift
+				doc.save(ignore_permissions=True)
+				doc.submit()
 
-		if self.action == "Full Day Deduction" and self.leave_application:
-			doc = frappe.get_doc("Attendance", self.attendance)
-			doc.delete()
+			if self.action == "Full Day Deduction" and self.leave_application:
+				doc = frappe.get_doc("Attendance", self.attendance)
+				doc.delete()
 
-			doc = frappe.get_doc("Leave Application", self.leave_application)
-			doc.status = "Approved"
-			doc.save(ignore_permissions=True)
-			doc.submit()
+				doc = frappe.get_doc("Leave Application", self.leave_application)
+				doc.status = "Approved"
+				doc.save(ignore_permissions=True)
+				doc.submit()
 
-		if self.action == "Half Day Deduction" and self.leave_application:
-			doc = frappe.get_doc("Attendance", self.attendance)
-			doc.delete()
+			if self.action == "Half Day Deduction" and self.leave_application:
+				doc = frappe.get_doc("Attendance", self.attendance)
+				doc.delete()
 
-			doc = frappe.get_doc("Leave Application", self.leave_application)
-			doc.half_day = 1
-			doc.status = "Approved"
-			doc.save(ignore_permissions=True)
+				doc = frappe.get_doc("Leave Application", self.leave_application)
+				doc.half_day = 1
+				doc.status = "Approved"
+				doc.save(ignore_permissions=True)
+				doc.submit()
+
+		if application_type == "Machine Off":
+			doc = frappe.get_doc(dict(
+				doctype = "Attendance",
+				attendance_date = self.miss_punch_date,
+				status = "Present",
+				in_time = self.last_punch_time,
+				out_time = self.exit_time,
+				employee = self.employee,
+				shift = self.default_shift,
+				working_hours = self.working_hours,
+				office_hours = self.office_hours,
+				overtime = flt(self.working_hours)-flt(self.office_hours) if flt(self.working_hours) > flt(self.office_hours) else 0,
+			)).insert(ignore_permissions = True)
 			doc.submit()
 
 @frappe.whitelist(allow_guest=True)

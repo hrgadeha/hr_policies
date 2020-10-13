@@ -161,7 +161,7 @@ def create_miss_punch_entry(employee,attendance_date,last_punch_type,last_punch_
 	doc = frappe.get_doc(dict(
 		doctype = "Leave Application",
 		employee = employee,
-		leave_type = "Leave Without Pay",
+		leave_type = "Miss Punch",
 		from_date = attendance_date,
 		to_date = attendance_date,
 		posting_date = attendance_date,
