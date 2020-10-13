@@ -10,12 +10,12 @@ from frappe.model.document import Document
 
 class MissPunchApplication(Document):
 	def validate(self):
-		if self.working_hours == 0 and self.office_hours == 0:
-			FMT = '%H:%M:%S'
-			dateTimeDifference = datetime.strptime(self.exit_time, FMT) - datetime.strptime(self.last_punch_time, FMT)
-			self.working_hours =  dateTimeDifference.total_seconds() / 3600
-			dateTimeDifference_shift = self.end_time - self.start_time
-			self.office_hours =  dateTimeDifference_shift.total_seconds() / 3600
+		if self.office_hours == 0 and self.
+		FMT = '%H:%M:%S'
+		dateTimeDifference = datetime.strptime(self.exit_time, FMT) - datetime.strptime(self.last_punch_time, FMT)
+		self.working_hours =  dateTimeDifference.total_seconds() / 3600
+		dateTimeDifference_shift = self.end_time - self.start_time
+		self.office_hours =  dateTimeDifference_shift.total_seconds() / 3600
 
 	def on_submit(self):
 		if self.application_type == "Miss Punch":
@@ -52,7 +52,7 @@ class MissPunchApplication(Document):
 				doc.save(ignore_permissions=True)
 				doc.submit()
 
-		if not self.application_type == "Miss Punch":
+		if application_type == "Machine Off":
 			doc = frappe.get_doc(dict(
 				doctype = "Attendance",
 				attendance_date = self.miss_punch_date,

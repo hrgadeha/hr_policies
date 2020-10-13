@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 import frappe
 from frappe import _
 from frappe.utils import formatdate, format_datetime, getdate, get_datetime,get_first_day,get_last_day, nowdate, flt, cint, cstr, add_days, today,month_diff,date_diff,add_months
+from frappe.utils import formatdate, get_time, time_diff,getdate, get_datetime,get_first_day,get_last_day, nowdate, flt, cint, cstr, add_days, today,month_diff,date_diff,add_months
 from datetime import datetime
 from erpnext.hr.doctype.salary_structure.salary_structure import make_salary_slip
 from frappe.model.mapper import get_mapped_doc
@@ -393,6 +394,57 @@ def add_holiday_earning():
 			ot = frappe.get_doc("Holiday Attendance", i[0])
 			ot.added = 1
 			ot.save(ignore_permissions=True)
+
+
+@frappe.whitelist()
+def add_penalty():
+	data = frappe.db.sql("""select employee,sum(hours)
+                                from `tabAttendance Extra Entry` where calculated = 0 and date between "2020-09-01" and "2020-09-30"
+				group by employee;""",as_list=True)
+
+	name = frappe.db.sql("""select name
+                                from `tabAttendance Extra Entry` where calculated = 0 and 
+				date between "2020-09-01" and "2020-09-30";""",as_list=True)
+
+	data1 = frappe.db.sql("""select employee,sum(hours)
+				from `tabAttendance Extra Entry` where calculated = 0 and
+				YEAR(date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)
+				group by employee;""",as_list=True)
+
+	name1 = frappe.db.sql("""SELECT name FROM `tabAttendance Extra Entry` WHERE YEAR(date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH)
+			AND MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH) and calculated = 0;""",as_list=True)
+
+
+	if data:
+		for d in data:
+			hours = frappe.db.sql("""select office_hours from `tabAttendance` where docstatus = 1 and 
+				employee = %s order by name desc limit 1;""",(d[0]),as_dict=1)
+
+			per_hr = (int(frappe.db.get_value('Salary Structure Assignment', {'docstatus': 1,'employee': d[0]}, ['base'])) / 30) / hours.office_hours
+			shift = frappe.db.get_value("Employee",employee,"default_shift")
+			shift_start_time = frappe.db.get_value("Shift Type",shift,"start_time")
+			shift_end_time = frappe.db.get_value("Shift Type",shift,"end_time")
+
+			ads = frappe.get_doc({
+			"doctype": "Additional Salary",
+			"employee": d[0],
+			"payroll_date": "2020-09-30",
+			"company": frappe.db.get_single_value('Global Defaults', 'default_company'),
+			"salary_component": frappe.db.get_single_value('Late Entry Policies', 'late_entry_deduction_component'),
+			"amount": per_hr * d[1],
+			"overwrite_salary_structure_amount": 1
+			})
+			ads.insert(ignore_permissions=True,ignore_mandatory = True)
+			ads.save(ignore_permissions=True)
+			ads.submit()
+
+
+	if name:
+		for i in name:
+			ot = frappe.get_doc("Attendance Extra Entry", i[0])
+			ot.calculated = 1
+			ot.save(ignore_permissions=True)
+
 
 @frappe.whitelist()
 def add_1_day_in_leave():

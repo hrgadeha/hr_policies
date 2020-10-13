@@ -352,21 +352,39 @@ def add_late_entry_deduction():
 	from hr_policies.custom_validate import preview_salary_slip_for_late_entry
 	end_date = add_days(today(),-1)
 	start_date = get_first_day(end_date)
-	late_entry_doc = frappe.db.sql("""select employee,sum(hours) as 'hours' from `tabAttendance Extra Entry` where date between %s and %s group by employee""",(start_date,end_date),as_dict=1)
+	late_entry_doc = frappe.db.sql("""select employee,sum(hours) as 'hours' from
+		`tabAttendance Extra Entry` where calculated = 0 and
+		date between %s and %s group by employee;""",(start_date,end_date),as_dict=1)
+
+	extra_entry = frappe.db.sql("""select name from
+                `tabAttendance Extra Entry` where calculated = 0 and
+                date between %s and %s;""",(start_date,end_date),as_dict=1)
+
 	for row in late_entry_doc:
 		try:
 			salary_slip = preview_salary_slip_for_late_entry(row.employee)
-			day_rate = salary_slip.gross_pay / salary_slip.total_working_days
+			day_rate = salary_slip.gross_pay / 30 #salary_slip.total_working_days
 			shift_hours = get_shift_for_late_entry(row.employee,start_date,end_date)
 			hourly_rate = 0
+			print(salary_slip.gross_pay)
+			print(salary_slip.total_working_days)
+			print(shift_hours)
 			if not shift_hours == False and shift_hours > 0:
 				hourly_rate = flt(day_rate) / flt(shift_hours)
 				amount = hourly_rate * row.hours
 				add_deduction_for_late_entry(row.employee,end_date,amount)
+				print(hourly_rate)
+				print(amount)
 			else:
 				frappe.throw(_("Employee {0} Shift Not Define").format(row.employee))
 		except Exception as e:
 			frappe.log_error(frappe.get_traceback())
+
+	for id in extra_entry:
+		if id.name:
+			ot = frappe.get_doc("Attendance Extra Entry", id.name)
+			ot.calculated = 1
+			ot.save()
 
 def get_shift_for_late_entry(employee,start_date,end_date):
 	shift_data = frappe.db.sql("""select shift from `tabAttendance` where attendance_date between %s and %s limit 1""",(start_date,end_date),as_dict=1)
@@ -387,11 +405,11 @@ def get_shift_for_late_entry(employee,start_date,end_date):
 def add_deduction_for_late_entry(employee,date,amount):
 	doc = frappe.get_doc(dict(
 		doctype = "Additional Salary",
-		payroll_date = date,
+		payroll_date = "2020-09-30",
 		employee = employee,
 		company = frappe.db.get_value("Global Defaults","Global Defaults","default_company"),
 		salary_component = frappe.db.get_single_value('Late Entry Policies', 'late_entry_deduction_component'),
-		amount = amount,
+		amount = int(amount),
 		overwrite_salary_structure_amount = 1
 	)).insert(ignore_permissions = True)
 	doc.submit()

@@ -167,7 +167,8 @@ fixtures = [
 			"Attendance-out_time",
 			"Attendance-miss_punch",
 			"Attendance-overtime",
-			"Attendance-office_hours"
+			"Attendance-office_hours",
+			"Attendance Extra Entry-calculated"
 		]
 	   ]
 	]
