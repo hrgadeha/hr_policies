@@ -18,54 +18,27 @@ class MissPunchApplication(Document):
 			self.office_hours =  dateTimeDifference_shift.total_seconds() / 3600
 
 	def on_submit(self):
-		if self.application_type == "Miss Punch":
-			if self.action == "Present" and self.attendance:
-				doc = frappe.get_doc("Leave Application", self.leave_application)
-				doc.delete()
+		if self.leave_application:
+			doc = frappe.get_doc("Leave Application", self.leave_application)
+			doc.delete()
 
-				doc = frappe.get_doc("Attendance", self.attendance)
-				doc.status = "Present"
-				doc.working_hours = self.working_hours
-				doc.in_time = self.last_punch_time
-				doc.out_time = self.exit_time
-				doc.office_hours = self.office_hours
-				doc.shift = self.default_shift
-				doc.save(ignore_permissions=True)
-				doc.submit()
+		if self.attendance:
+			doc = frappe.get_doc("Attendance", self.attendance)
+			doc.delete()
 
-			if self.action == "Full Day Deduction" and self.leave_application:
-				doc = frappe.get_doc("Attendance", self.attendance)
-				doc.delete()
-
-				doc = frappe.get_doc("Leave Application", self.leave_application)
-				doc.status = "Approved"
-				doc.save(ignore_permissions=True)
-				doc.submit()
-
-			if self.action == "Half Day Deduction" and self.leave_application:
-				doc = frappe.get_doc("Attendance", self.attendance)
-				doc.delete()
-
-				doc = frappe.get_doc("Leave Application", self.leave_application)
-				doc.half_day = 1
-				doc.status = "Approved"
-				doc.save(ignore_permissions=True)
-				doc.submit()
-
-		if not self.application_type == "Miss Punch":
-			doc = frappe.get_doc(dict(
-				doctype = "Attendance",
-				attendance_date = self.miss_punch_date,
-				status = "Present",
-				in_time = self.last_punch_time,
-				out_time = self.exit_time,
-				employee = self.employee,
-				shift = self.default_shift,
-				working_hours = self.working_hours,
-				office_hours = self.office_hours,
-				overtime = flt(self.working_hours)-flt(self.office_hours) if flt(self.working_hours) > flt(self.office_hours) else 0,
-			)).insert(ignore_permissions = True)
-			doc.submit()
+		doc = frappe.get_doc(dict(
+			doctype = "Attendance",
+			attendance_date = self.miss_punch_date,
+			status = "Present",
+			in_time = self.last_punch_time,
+			out_time = self.exit_time,
+			employee = self.employee,
+			shift = self.default_shift,
+			working_hours = self.working_hours,
+			office_hours = self.office_hours,
+			overtime = flt(self.working_hours)-flt(self.office_hours) if flt(self.working_hours) > flt(self.office_hours) else 0,
+		)).insert(ignore_permissions = True)
+		doc.submit()
 
 @frappe.whitelist(allow_guest=True)
 def getattendance(employee,attendance_date):

@@ -18,14 +18,17 @@
   "column_break_11",
   "office_hours",
   "section_break_13",
+  "punch_time",
+  "punch_type",
+  "column_break_16",
   "last_punch_time",
   "exit_time",
   "working_hours",
+  "section_break_20",
   "reason",
   "attendance",
   "leave_application",
   "column_break_20",
-  "action",
   "amended_from"
  ],
  "fields": [
@@ -64,6 +67,7 @@
    "fieldname": "last_punch_time",
    "fieldtype": "Time",
    "label": "Check In",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -71,6 +75,7 @@
    "fieldtype": "Time",
    "in_list_view": 1,
    "label": "Check Out",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -94,14 +99,6 @@
   {
    "fieldname": "column_break_11",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "action",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Action",
-   "options": "\nPresent\nHalf Day Deduction\nFull Day Deduction",
-   "reqd": 1
   },
   {
    "fieldname": "amended_from",
@@ -164,10 +161,31 @@
   {
    "fieldname": "column_break_20",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "punch_time",
+   "fieldtype": "Time",
+   "label": "Punch Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "punch_type",
+   "fieldtype": "Select",
+   "label": "Punch Type",
+   "options": "\nIn\nOut",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_16",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_20",
+   "fieldtype": "Section Break"
   }
  ],
  "is_submittable": 1,
- "modified": "2020-10-13 15:36:05.954613",
+ "modified": "2020-10-15 23:16:21.591778",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Miss Punch Application",
