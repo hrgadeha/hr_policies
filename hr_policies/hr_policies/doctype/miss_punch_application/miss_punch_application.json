@@ -18,7 +18,6 @@
   "column_break_11",
   "office_hours",
   "section_break_13",
-  "punch_time",
   "punch_type",
   "column_break_16",
   "last_punch_time",
@@ -163,12 +162,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "punch_time",
-   "fieldtype": "Time",
-   "label": "Punch Time",
-   "read_only": 1
-  },
-  {
    "fieldname": "punch_type",
    "fieldtype": "Select",
    "label": "Punch Type",
@@ -185,7 +178,7 @@
   }
  ],
  "is_submittable": 1,
- "modified": "2020-10-15 23:16:21.591778",
+ "modified": "2020-10-16 23:44:41.526746",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Miss Punch Application",

@@ -62,3 +62,25 @@ def getlapp(employee,attendance_date):
 		return attendance
 	else:
 		return False
+
+@frappe.whitelist(allow_guest=True)
+def getINpunch(employee,attendance_date):
+	attendance = frappe.db.sql("""SELECT time(attendance_time) from `tabAttendance Log` where employee = %s
+			and date(attendance_time) = %s and attendance_type = "IN"
+			order by creation limit 1;""",(employee,attendance_date))
+
+	if attendance:
+		return attendance
+	else:
+		return False
+
+@frappe.whitelist(allow_guest=True)
+def getOUTpunch(employee,attendance_date):
+	attendance = frappe.db.sql("""SELECT time(attendance_time) from `tabAttendance Log` where employee = %s
+                        and date(attendance_time) = %s and attendance_type = "OUT"
+                        order by creation limit 1;""",(employee,attendance_date))
+
+	if attendance:
+		return attendance
+	else:
+		return False
