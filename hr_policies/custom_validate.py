@@ -356,31 +356,35 @@ def updateShift(doc,method):
 @frappe.whitelist()
 def add_holiday_earning():
 	data = frappe.db.sql("""select employee,sum(total_working_hours)
-				from `tabHoliday Attendance` where added = 0 and
-				YEAR(date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)
+				from `tabHoliday Attendance` where total_working_hours != 0 and added = 0 and
+				date between "2020-09-001" and "2020-09-30"
 				group by employee;""",as_list=True)
 
-	name = frappe.db.sql("""SELECT name FROM `tabHoliday Attendance` WHERE YEAR(date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH)
-			AND MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH) and added = 0;""",as_list=True)
+	name = frappe.db.sql("""SELECT name FROM `tabHoliday Attendance` WHERE total_working_hours != 0 and 
+				date between "2020-09-01" and "2020-09-30" and added = 0;""",as_list=True)
 
 
 	if data:
 		for d in data:
-			gross_pay = preview_salary_slip(d[0])
-			working_days = preview_working_days(d[0])
+			salary_slip = preview_salary_slip_for_late_entry(d[0])
+			day_rate = salary_slip.gross_pay / 30 #salary_slip.total_working_days
+#			gross_pay = preview_salary_slip(d[0])
+#			working_days = preview_working_days(d[0])
 
-			hours = frappe.db.sql("""select office_hours from `tabAttendance` where docstatus = 1 and employee = %s order by name desc 
-                        limit 1;""",(d[0]))
+			hours = frappe.db.sql("""select office_hours from `tabAttendance` where status = "Present" and 
+			docstatus = 1 and employee = %s and office_hours != 0 order by name desc limit 1;""",(d[0]))
 
-			per_hr = (gross_pay / working_days) / hours[0][0]
+			per_hr = day_rate / abs(hours[0][0])
+			print(d[0])
+			print(per_hr)
 
 			ads = frappe.get_doc({
 			"doctype": "Additional Salary",
 			"employee": d[0],
-			"payroll_date": datetime.today() - timedelta(days=1),
+			"payroll_date": "2020-09-30",
 			"company": frappe.db.get_single_value('Global Defaults', 'default_company'),
 			"salary_component": frappe.db.get_single_value('Attendance Policies', 'holiday_wages_component'),
-			"amount": per_hr * d[1],
+			"amount": int(per_hr * d[1]),
 			"overwrite_salary_structure_amount": 1
 			})
 			ads.insert(ignore_permissions=True,ignore_mandatory = True)
@@ -402,3 +406,5 @@ def add_1_day_in_leave():
 			doc.new_leaves_allocated += 1
 			doc.total_leaves_allocated += 1
 			doc.save()
+
+

@@ -119,11 +119,14 @@ frappe.ui.form.on('Miss Punch Application',  'validate',  function(frm) {
 		        validated = false;
     		}
 	}
-		var hoursMinutes = frm.doc.last_punch_time.split(":");
+		var in_time = frm.doc.last_punch_time;
+		var out_time = frm.doc.exit_time;
+		var hoursMinutes = in_time.toString().split(":");
                 var hours = parseInt(hoursMinutes[0], 10);
                 var minutes = hoursMinutes[1] ? parseInt(hoursMinutes[1], 10) : 0;
                 var entry = hours + minutes / 60;
-                var hoursMinutes1 = frm.doc.exit_time.split(":");
+
+                var hoursMinutes1 = out_time.toString().split(":");
                 var hours1 = parseInt(hoursMinutes1[0], 10);
                 var minutes1 = hoursMinutes1[1] ? parseInt(hoursMinutes1[1], 10) : 0;
                 var exit = hours1 + minutes1 / 60;
@@ -138,12 +141,14 @@ frappe.ui.form.on('Miss Punch Application',  'exit_time',  function(frm) {
 	if(frm.doc.exit_time){
                 frm.set_value("working_hours",0);
                 frm.set_value("office_hours",0);
-                var hoursMinutes = frm.doc.last_punch_time.split(":");
+                var in_time = frm.doc.last_punch_time;
+                var out_time = frm.doc.exit_time;
+                var hoursMinutes = in_time.toString().split(":");
                 var hours = parseInt(hoursMinutes[0], 10);
                 var minutes = hoursMinutes[1] ? parseInt(hoursMinutes[1], 10) : 0;
                 var entry = hours + minutes / 60;
 
-                var hoursMinutes1 = frm.doc.exit_time.split(":");
+                var hoursMinutes1 = out_time.toString().split(":");
                 var hours1 = parseInt(hoursMinutes1[0], 10);
                 var minutes1 = hoursMinutes1[1] ? parseInt(hoursMinutes1[1], 10) : 0;
                 var exit = hours1 + minutes1 / 60;
@@ -157,12 +162,14 @@ frappe.ui.form.on('Miss Punch Application',  'last_punch_time',  function(frm) {
 	if(frm.doc.last_punch_time){
                 frm.set_value("working_hours",0);
                 frm.set_value("office_hours",0);
-                var hoursMinutes = frm.doc.last_punch_time.split(":");
+                var in_time = frm.doc.last_punch_time;
+                var out_time = frm.doc.exit_time;
+                var hoursMinutes = in_time.toString().split(":");
                 var hours = parseInt(hoursMinutes[0], 10);
                 var minutes = hoursMinutes[1] ? parseInt(hoursMinutes[1], 10) : 0;
                 var entry = hours + minutes / 60;
 
-                var hoursMinutes1 = frm.doc.exit_time.split(":");
+                var hoursMinutes1 = out_time.toString().split(":");
                 var hours1 = parseInt(hoursMinutes1[0], 10);
                 var minutes1 = hoursMinutes1[1] ? parseInt(hoursMinutes1[1], 10) : 0;
                 var exit = hours1 + minutes1 / 60;
@@ -184,7 +191,7 @@ attendance_date: frm.doc.miss_punch_date
 },
 callback:function(r){
         var len=r.message.length;
-            frm.set_value("exit_time",r.message);
+            frm.set_value("exit_time",r.message[0][0]);
             frm.set_value("last_punch_time","00:00:00");
             frm.set_df_property('exit_time',  'read_only', 1);
             frm.set_df_property('last_punch_time',  'read_only', 0);
@@ -204,7 +211,7 @@ employee: frm.doc.employee,
 attendance_date: frm.doc.miss_punch_date
 },
 callback:function(r){
-            frm.set_value("last_punch_time",r.message);
+            frm.set_value("last_punch_time",r.message[0][0]);
             frm.set_value("exit_time","00:00:00");
             frm.set_df_property('last_punch_time',  'read_only', 1);
             frm.set_df_property('exit_time',  'read_only', 0);

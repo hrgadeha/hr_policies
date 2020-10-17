@@ -354,27 +354,29 @@ def add_late_entry_deduction():
 	start_date = get_first_day(end_date)
 	late_entry_doc = frappe.db.sql("""select employee,sum(hours) as 'hours' from
 		`tabAttendance Extra Entry` where calculated = 0 and
-		date between %s and %s group by employee;""",(start_date,end_date),as_dict=1)
+		date between "2020-09-01" and "2020-09-30" group by employee;""",as_dict=1)
 
 	extra_entry = frappe.db.sql("""select name from
                 `tabAttendance Extra Entry` where calculated = 0 and
-                date between %s and %s;""",(start_date,end_date),as_dict=1)
+                date between "2020-09-01" and "2020-09-30";""",as_dict=1)
 
 	for row in late_entry_doc:
 		try:
+			hours = frappe.db.sql("""select office_hours from `tabAttendance` where docstatus = 1 and 
+			employee = %s order by creation desc limit 1;""",(row.employee))
 			salary_slip = preview_salary_slip_for_late_entry(row.employee)
 			day_rate = salary_slip.gross_pay / 30 #salary_slip.total_working_days
-			shift_hours = get_shift_for_late_entry(row.employee,start_date,end_date)
 			hourly_rate = 0
+			print(row.employee)
 			print(salary_slip.gross_pay)
 			print(salary_slip.total_working_days)
-			print(shift_hours)
-			if not shift_hours == False and shift_hours > 0:
-				hourly_rate = flt(day_rate) / flt(shift_hours)
+			print(abs(hours[0][0]))
+			if not abs(hours[0][0]) == False and abs(hours[0][0]) > 0:
+				hourly_rate = flt(day_rate) / flt(abs(hours[0][0]))
 				amount = hourly_rate * row.hours
 				add_deduction_for_late_entry(row.employee,end_date,amount)
-				print(hourly_rate)
-				print(amount)
+				print(int(hourly_rate))
+				print(int(amount))
 			else:
 				frappe.throw(_("Employee {0} Shift Not Define").format(row.employee))
 		except Exception as e:
