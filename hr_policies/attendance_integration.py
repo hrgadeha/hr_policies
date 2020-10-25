@@ -198,7 +198,7 @@ def create_attendance(employee,attendance_date,in_time,out_time,total_hours,earl
 		employee = employee,
 		shift = shift.name,
 		working_hours = working_hours,
-		office_hours = office_hours,
+		office_hours = abs(office_hours),
 		miss_punch = miss_punch,
 		overtime = flt(working_hours)-flt(office_hours) if flt(working_hours) > flt(office_hours) else 0
 	)).insert(ignore_permissions = True)

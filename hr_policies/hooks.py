@@ -105,9 +105,6 @@ doc_events = {
 	"Attendance":{
 		"on_submit":"hr_policies.attendance_integration.add_late_entry",
 		"before_submit":"hr_policies.process_attendance.process_sandwich_leave"
-	},
-	"Shift Assignment":{
-		"on_submit":"hr_policies.custom_validate.updateShift"
 	}
 }
 
@@ -168,7 +165,10 @@ fixtures = [
 			"Attendance-miss_punch",
 			"Attendance-overtime",
 			"Attendance-office_hours",
-			"Attendance Extra Entry-calculated"
+			"Attendance Extra Entry-calculated",
+			"Shift Type-shift_type",
+			"Shift Type-section_break_1",
+			"Shift Assignment-shift_time_type"
 		]
 	   ]
 	]
@@ -192,7 +192,13 @@ scheduler_events = {
 		],
 		"30 23 * * Sun":[
 			"hr_policies.process_attendance.process_sandwich_leave_weekly"
-		]
+		],
+		"0 22 * * *":[
+                        "hr_policies.custom_validate.changeDayShift"
+                ],
+		"0 13 * * *":[
+                        "hr_policies.custom_validate.changeNightShift"
+                ]
 	}
 
 }

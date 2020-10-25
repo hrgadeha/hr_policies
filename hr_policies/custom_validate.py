@@ -346,14 +346,6 @@ def preview_salary_slip_for_late_entry(employee):
 
 
 @frappe.whitelist()
-def updateShift(doc,method):
-	emp = frappe.get_doc("Employee", doc.employee)
-	emp.default_shift = doc.shift_type
-	emp.save()
-
-
-
-@frappe.whitelist()
 def add_holiday_earning():
 	data = frappe.db.sql("""select employee,sum(total_working_hours)
 				from `tabHoliday Attendance` where total_working_hours != 0 and added = 0 and
@@ -408,3 +400,28 @@ def add_1_day_in_leave():
 			doc.save()
 
 
+
+
+@frappe.whitelist()
+def changeDayShift():
+	data = frappe.db.sql("""select employee,shift_type
+				from `tabShift Assignment` where docstatus = 1 and shift_time_type = "Day Shift"
+				and date = DATE_ADD(CURDATE(),INTERVAL 1 DAY);""",as_list=True)
+
+	if data:
+		for d in data:
+			doc = frappe.get_doc("Employee", d[0])
+			doc.default_shift = d[1]
+			doc.save(ignore_permissions=True)
+
+@frappe.whitelist()
+def changeNightShift():
+	data = frappe.db.sql("""select employee,shift_type
+                                from `tabShift Assignment` where docstatus = 1 and shift_time_type = "Night Shift"
+                                and date = DATE_ADD(CURDATE(),INTERVAL 1 DAY);""",as_list=True)
+
+	if data:
+		for d in data:
+			doc = frappe.get_doc("Employee", d[0])
+			doc.default_shift = d[1]
+			doc.save(ignore_permissions=True)
