@@ -8,29 +8,28 @@ frappe.ui.form.on('Miss Punch Application', {
 });
 
 frappe.ui.form.on("Miss Punch Application", {
-  "miss_punch_date": function(frm) {
-	if(frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch"){
-    frappe.call({
-    "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getattendance",
-args: {
-employee: frm.doc.employee,
-attendance_date: frm.doc.miss_punch_date
-},
-callback:function(r){
-	var len=r.message.length;
-	    if(!r.message){
-	        frm.set_value("punch_time","");
-	        frm.set_value("attendance","");
-	        frappe.throw("No Miss Punch Found On Selected Date, Please Select Valid Date");
-	    }
-	    else{
-//	        frm.set_value("punch_time",r.message[0][1]);
-	        frm.set_value("attendance",r.message[0][0]);
-	    }
-	}
-    });
-
-	}
+	"miss_punch_date": function(frm) {
+		if(frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch"){
+    		frappe.call({
+    			"method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getattendance",
+				args: {
+					employee: frm.doc.employee,
+					attendance_date: frm.doc.miss_punch_date
+				},
+				callback:function(r){
+					var len=r.message.length;
+					if(!r.message){
+						frm.set_value("punch_time","");
+						frm.set_value("attendance","");
+						frappe.throw("No Miss Punch Found On Selected Date, Please Select Valid Date");
+					}
+					else{
+						//frm.set_value("punch_time",r.message[0][1]);
+						frm.set_value("attendance",r.message[0][0]);
+					}
+				}
+			});
+		}
 	}
 });
 
