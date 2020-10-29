@@ -219,3 +219,34 @@ callback:function(r){
 }
 }
 });
+
+
+frappe.ui.form.on("Miss Punch Application", {
+  "application_type": function(frm) {
+        if(frm.doc.application_type == "Machine Off"){
+            frm.set_df_property('last_punch_time',  'read_only', 0);
+            frm.set_df_property('exit_time',  'read_only', 0);
+            frm.set_df_property('punch_type',  'reqd', 0);
+        }
+        if(frm.doc.application_type == "Miss Punch"){
+            frm.set_df_property('last_punch_time',  'read_only', 1);
+            frm.set_df_property('exit_time',  'read_only', 1);
+            frm.set_df_property('punch_type',  'reqd', 1);
+        }
+}
+});
+
+frappe.ui.form.on("Miss Punch Application", {
+  "refresh": function(frm) {
+        if(frm.doc.application_type == "Machine Off"){
+            frm.set_df_property('last_punch_time',  'read_only', 0);
+            frm.set_df_property('exit_time',  'read_only', 0);
+            frm.set_df_property('punch_type',  'reqd', 0);
+        }
+        if(frm.doc.application_type == "Miss Punch"){
+            frm.set_df_property('last_punch_time',  'read_only', 1);
+            frm.set_df_property('exit_time',  'read_only', 1);
+            frm.set_df_property('punch_type',  'reqd', 1);
+        }
+}
+});

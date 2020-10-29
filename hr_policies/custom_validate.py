@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 import frappe
 from frappe import _
 from frappe.utils import formatdate, format_datetime, getdate, get_datetime,get_first_day,get_last_day, nowdate, flt, cint, cstr, add_days, today,month_diff,date_diff,add_months
-from datetime import datetime
+from datetime import datetime,timedelta
 from erpnext.hr.doctype.salary_structure.salary_structure import make_salary_slip
 from frappe.model.mapper import get_mapped_doc
 from erpnext.hr.doctype.employee.employee import get_holiday_list_for_employee
@@ -346,42 +346,36 @@ def preview_salary_slip_for_late_entry(employee):
 
 
 @frappe.whitelist()
-def updateShift(doc,method):
-	emp = frappe.get_doc("Employee", doc.employee)
-	emp.default_shift = doc.shift_type
-	emp.save()
-
-
-
-@frappe.whitelist()
 def add_holiday_earning():
-	data = frappe.db.sql("""select employee,sum(total_working_hours)
-				from `tabHoliday Attendance` where total_working_hours != 0 and added = 0 and
-				date between "2020-09-001" and "2020-09-30"
-				group by employee;""",as_list=True)
+	data = frappe.db.sql("""select ha.employee,sum(ha.total_working_hours)
+				from `tabHoliday Attendance` ha, `tabEmployee` emp where ha.total_working_hours != 0 and ha.added = 0 and
+				YEAR(ha.date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND 
+				MONTH(ha.date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH) 
+				and ha.employee = emp.name and emp.status = "Active"
+				group by ha.employee;""",as_list=True)
 
-	name = frappe.db.sql("""SELECT name FROM `tabHoliday Attendance` WHERE total_working_hours != 0 and 
-				date between "2020-09-01" and "2020-09-30" and added = 0;""",as_list=True)
+	name = frappe.db.sql("""SELECT ha.name FROM `tabHoliday Attendance` ha, `tabEmployee` emp WHERE ha.total_working_hours != 0 and 
+				YEAR(ha.date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND 
+				MONTH(ha.date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH) and ha.added = 0 and 
+				ha.employee = emp.name and emp.status = "Active";""",as_list=True)
 
 
 	if data:
 		for d in data:
 			salary_slip = preview_salary_slip_for_late_entry(d[0])
-			day_rate = salary_slip.gross_pay / 30 #salary_slip.total_working_days
-#			gross_pay = preview_salary_slip(d[0])
-#			working_days = preview_working_days(d[0])
+			day_rate = salary_slip.gross_pay / salary_slip.total_working_days
 
 			hours = frappe.db.sql("""select office_hours from `tabAttendance` where status = "Present" and 
 			docstatus = 1 and employee = %s and office_hours != 0 order by name desc limit 1;""",(d[0]))
 
 			per_hr = day_rate / abs(hours[0][0])
-			print(d[0])
-			print(per_hr)
+#			print(d[0])
+#			print(int(per_hr))
 
 			ads = frappe.get_doc({
 			"doctype": "Additional Salary",
 			"employee": d[0],
-			"payroll_date": "2020-09-30",
+			"payroll_date": datetime.today() - timedelta(days=1),
 			"company": frappe.db.get_single_value('Global Defaults', 'default_company'),
 			"salary_component": frappe.db.get_single_value('Attendance Policies', 'holiday_wages_component'),
 			"amount": int(per_hr * d[1]),
@@ -408,3 +402,28 @@ def add_1_day_in_leave():
 			doc.save()
 
 
+
+
+@frappe.whitelist()
+def changeDayShift():
+	data = frappe.db.sql("""select employee,shift_type
+				from `tabShift Assignment` where docstatus = 1 and shift_time_type = "Day Shift"
+				and date = DATE_ADD(CURDATE(),INTERVAL 1 DAY);""",as_list=True)
+
+	if data:
+		for d in data:
+			doc = frappe.get_doc("Employee", d[0])
+			doc.default_shift = d[1]
+			doc.save(ignore_permissions=True)
+
+@frappe.whitelist()
+def changeNightShift():
+	data = frappe.db.sql("""select employee,shift_type
+                                from `tabShift Assignment` where docstatus = 1 and shift_time_type = "Night Shift"
+                                and date = DATE_ADD(CURDATE(),INTERVAL 1 DAY);""",as_list=True)
+
+	if data:
+		for d in data:
+			doc = frappe.get_doc("Employee", d[0])
+			doc.default_shift = d[1]
+			doc.save(ignore_permissions=True)
