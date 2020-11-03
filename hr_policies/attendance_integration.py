@@ -223,6 +223,8 @@ def create_attendance(employee,attendance_date,in_time,out_time,total_hours,earl
 	working_hours = flt(total_hours) / 60
 	working_hours += get_pass_approved_hours(employee,attendance_date)
 	print(office_hours)
+	print("attendance_date " + str(attendance_date) )
+	print("EMployee "+str(employee))
 	attendance_doc = frappe.get_doc(dict(
 		doctype = "Attendance",
 		attendance_date = attendance_date,
@@ -239,6 +241,7 @@ def create_attendance(employee,attendance_date,in_time,out_time,total_hours,earl
 	)).insert(ignore_permissions = True)
 	if not attendance_doc.miss_punch:
 		attendance_doc.submit()
+		print("attendance submited")
 	frappe.db.commit()
 
 def get_gatepass_details(employee,date):
