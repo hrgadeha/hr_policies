@@ -92,7 +92,7 @@ def process_attendance(date=None):
 			# filters = {
 			# 	"shift":shift.name
 			# }
-			attendance_log = frappe.db.sql("""select * from `tabAttendance Log` where shift=%s and Date(attendance_time)=%s and employee = "EMP-PNI-00286" order by employee,attendance_time""",(shift.name,date),as_dict=1)
+			attendance_log = frappe.db.sql("""select * from `tabAttendance Log` where shift=%s and Date(attendance_time)=%s order by employee,attendance_time""",(shift.name,date),as_dict=1)
 			# attendance_log = frappe.get_all("Attendance Log",fields="*",filters=filters, order_by="employee,attendance_time")
 			print(attendance_log)
 			for key, group in itertools.groupby(attendance_log, key=lambda x: (x['employee'], x['shift_start_time'])):
