@@ -104,9 +104,14 @@ def process_attendance(date=None):
 						in_time,out_time,total_hours,early_exit,late_entry,miss_punch = get_attendance_details(shift,logs)
 						holiday_list = get_holiday_list_for_employee(logs[0].employee)
 						if check_holiday(getdate(logs[0].attendance_time),holiday_list):
+							print("Holiday attendance start")
 							create_holiday_attendance(logs[0].employee,getdate(logs[0].attendance_time),in_time,out_time,total_hours)
+							print("Holiday Attendance Done")
 						else:
+							print("Creating Attendance Start")
 							create_attendance(logs[0].employee,getdate(logs[0].attendance_time),in_time,out_time,total_hours,early_exit,late_entry,miss_punch,shift)
+							print("Attendance Creation Done")
+						print("Attendance creaetion or create holiday attendance done")
 						employee_list_logs.append(logs[0].employee)
 					except Exception as e:
 						print('exception')
