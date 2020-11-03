@@ -239,6 +239,7 @@ def create_attendance(employee,attendance_date,in_time,out_time,total_hours,earl
 	)).insert(ignore_permissions = True)
 	if not attendance_doc.miss_punch:
 		attendance_doc.submit()
+	frappe.db.commit()
 
 def get_gatepass_details(employee,date):
 	get_pass_details = frappe.db.sql("""
