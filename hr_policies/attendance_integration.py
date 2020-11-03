@@ -21,12 +21,21 @@ def update_attendance_log(self,method):
 			self.shift = shift
 			self.shift_start_time = frappe.db.get_value("Shift Type",shift,"start_time")
 			self.shift_end_time = frappe.db.get_value("Shift Type",shift,"end_time")
-		new_log_type = check_last_log(employee,self.attendance_time)
+			self._shift_type = frappe.db.get_value("Shift Type",shift,"shift_type")
+		new_log_type = check_last_log(employee,self.attendance_time, self)
 		self.employee = employee
 		self.attendance_type = new_log_type
 
-def check_last_log(employee,date):
+def check_last_log(employee,date, attendance_log = None):
+	is_night_shift = False
+	
+	if attendance_log and attendance_log._shift_type == "Night Shift":
+		is_night_shift = True
+	if is_night_shift:
+		return get_night_shift_punch_type(employee, date, attendance_log)
+	
 	log_data = frappe.db.sql("""select attendance_type from `tabAttendance Log` where employee=%s and DATE(attendance_time)=%s order by creation desc""",(employee,getdate(date)),as_dict=1)
+	
 	if log_data:
 		if log_data[0].attendance_type == "IN":
 			return 'OUT'
@@ -35,6 +44,27 @@ def check_last_log(employee,date):
 	else:
 		return 'IN'
 
+def get_night_shift_punch_type(employee, date, attendance_log):
+	log_data = frappe.db.sql("""
+		select 
+			attendance_type 
+		from 
+			`tabAttendance Log` 
+		where 
+			employee=%s and 
+			DATE(attendance_time)=%s 
+		order by 
+			creation desc
+	""",(employee,getdate(date)),as_dict=1)
+	
+	if log_data:
+		if log_data[0].attendance_type == "IN":
+			return 'OUT'
+		else:
+			return 'IN'
+	else:
+		return 'IN'
+	return ""
 def get_employee_from_card(card):
 	employee = frappe.get_all("Employee",filters={"card_no":card},fields=["name"])
 	if employee:
@@ -44,8 +74,8 @@ def get_employee_from_card(card):
 
 @frappe.whitelist()
 def run_attendance_manually():
-	start_date = '2020-09-29'
-	end_date = '2020-09-30'
+	start_date = '2020-11-01'
+	end_date = '2020-11-02'
 	while getdate(start_date) <= getdate(end_date):
 		print('Attendance Process Start For Date ' + str(start_date))
 		process_attendance(start_date)
@@ -62,7 +92,7 @@ def process_attendance(date=None):
 			# filters = {
 			# 	"shift":shift.name
 			# }
-			attendance_log = frappe.db.sql("""select * from `tabAttendance Log` where shift=%s and Date(attendance_time)=%s order by employee,attendance_time""",(shift.name,date),as_dict=1)
+			attendance_log = frappe.db.sql("""select * from `tabAttendance Log` where shift=%s and Date(attendance_time)=%s and employee = "EMP-PNI-00286" order by employee,attendance_time""",(shift.name,date),as_dict=1)
 			# attendance_log = frappe.get_all("Attendance Log",fields="*",filters=filters, order_by="employee,attendance_time")
 			print(attendance_log)
 			for key, group in itertools.groupby(attendance_log, key=lambda x: (x['employee'], x['shift_start_time'])):
