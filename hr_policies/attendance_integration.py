@@ -21,7 +21,7 @@ def update_attendance_log(self,method):
 			self.shift = shift
 			self.shift_start_time = frappe.db.get_value("Shift Type",shift,"start_time")
 			self.shift_end_time = frappe.db.get_value("Shift Type",shift,"end_time")
-			self._shift_type = frappe.db.get_value("Shift Type",shift,"shift_type")
+			# self._shift_type = frappe.db.get_value("Shift Type",shift,"shift_type")
 		new_log_type = check_last_log(employee,self.attendance_time, self)
 		self.employee = employee
 		self.attendance_type = new_log_type
@@ -29,8 +29,8 @@ def update_attendance_log(self,method):
 def check_last_log(employee,date, attendance_log = None):
 	is_night_shift = False
 	
-	if attendance_log and attendance_log._shift_type == "Night Shift":
-		is_night_shift = True
+	# if attendance_log and attendance_log._shift_type == "Night Shift":
+	# 	is_night_shift = True
 	if is_night_shift:
 		return get_night_shift_punch_type(employee, date, attendance_log)
 	

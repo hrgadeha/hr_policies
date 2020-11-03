@@ -12,7 +12,6 @@
   "attendance_time",
   "machine_id",
   "other_details_section",
-  "_shift_type",
   "shift",
   "attendance",
   "column_break_10",
@@ -90,14 +89,9 @@
    "fieldtype": "Time",
    "label": "Shift End Time",
    "read_only": 1
-  },
-  {
-   "fieldname": "_shift_type",
-   "fieldtype": "Data",
-   "label": "Shift Type"
   }
  ],
- "modified": "2020-11-02 17:38:32.740281",
+ "modified": "2020-11-03 14:44:18.724387",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Attendance Log",
