@@ -25,7 +25,10 @@ class GatePass(Document):
 		if self.type == "Personal" and int(gp[0][0]) >= int(frappe.db.get_single_value("Gate Pass Policies", "no_of_gate_pass_allowed_for_personal_work")):
 			self.lop = 1
 			frappe.msgprint("You crossed your gate pass allowance limit per month, this gate pass may result in deduction in salary")			
-
+		# In Case of Employee is "Is Labour" True Then LOP must 1 as labour will charge for any exit in shift
+		is_labour = frappe.db.get_value("Employee", self.employee,"is_labour")
+		if is_labour:
+			self.lop = 1
 
 @frappe.whitelist()
 def getPLS():
