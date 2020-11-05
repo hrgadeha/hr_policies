@@ -89,17 +89,21 @@ def process_attendance(date=None):
 		shift_data = frappe.get_all("Shift Type",filters={},fields=["name","start_time","end_time"])
 		employee_list_logs = []
 		for shift in shift_data:
-			# filters = {
-			# 	"shift":shift.name
-			# }
+			"""
+				Process Attendance for each Shift
+			"""
+
+			# Get Attendance Log for current shift and for yesterday date or date pass from run_attendance_manual
 			attendance_log = frappe.db.sql("""select * from `tabAttendance Log` where shift=%s and Date(attendance_time)=%s order by employee,attendance_time""",(shift.name,date),as_dict=1)
-			# attendance_log = frappe.get_all("Attendance Log",fields="*",filters=filters, order_by="employee,attendance_time")
-			print(attendance_log)
+
+			frappe.errprint(attendance_log)
+			
 			for key, group in itertools.groupby(attendance_log, key=lambda x: (x['employee'], x['shift_start_time'])):
-				print(key)
+				frappe.errprint(key)
 				# frappe.errprint(list(group))
 				logs = list(group)
 				if logs:
+					#logs has combinations of in out logs for perticular shift
 					try:
 						in_time,out_time,total_hours,early_exit,late_entry,miss_punch = get_attendance_details(shift,logs)
 						holiday_list = get_holiday_list_for_employee(logs[0].employee)
@@ -150,18 +154,19 @@ def get_attendance_details(shift_details,logs):
 	late_entry = early_exit = miss_punch = False
 	in_time = get_time(logs[0].attendance_time)
 	if len(logs) >= 2:
-		out_time = get_time(logs[-1].attendance_time)
+		out_time = get_time(logs[-1].attendance_time) # Get Attendance Time From Last Log in List
 	else:
-		out_time = get_time(logs[0].attendance_time)
+		out_time = get_time(logs[0].attendance_time) # Get Attendance Time From First Log in List
 	if not len(logs) % 2 == 0:
 		miss_punch = True
+		#create miss punch entry and leave application in case of odd number of log
 		create_miss_punch_entry(logs[-1].employee,getdate(logs[0].attendance_time),logs[-1].attendance_type,get_time(logs[-1].attendance_time))
 		print('Miss Punch')
-	logs = logs[:]
+	logs = logs[:] # I don't know what this will do
 	while len(logs) >= 2:
-		total_hours += time_diff_in_hours(logs[0].attendance_time,logs[1].attendance_time)
+		total_hours += time_diff_in_hours(logs[0].attendance_time,logs[1].attendance_time) #calculate total working hours
 		del logs[:2]
-	if get_time(in_time) > get_time(shift_details.start_time) and time_diff_in_hours(str(shift_details.start_time),str(in_time)) > flt(late_allowance_for):
+	if get_time(in_time) > get_time(shift_details.start_time) and time_diff_in_hours(str(shift_details.start_time),str(in_time))*60 > flt(late_allowance_for):
 		print('late_entry')
 		if last_logs:
 			gate_pass_details = get_gatepass_details(last_logs[0].employee,getdate(last_logs[0].attendance_time))
@@ -246,23 +251,29 @@ def create_attendance(employee,attendance_date,in_time,out_time,total_hours,earl
 
 def get_gatepass_details(employee,date):
 	get_pass_details = frappe.db.sql("""
-SELECT from_time,to_time 
-FROM `tabGate Pass`
-WHERE employee=%s
-  AND date=%s
-  AND docstatus=1
-  AND lop=0
+		SELECT 
+			from_time,to_time 
+		FROM 
+			`tabGate Pass`
+		WHERE 
+			employee=%s
+			AND date=%s
+			AND docstatus=1
+			AND lop=0
 	""",(employee,date),as_dict=1)
 	return get_pass_details
 
 def get_pass_approved_hours(employee,date):
 	get_pass_details = frappe.db.sql("""
-SELECT sum(apply_for) AS 'gate_pass_mins'
-FROM `tabGate Pass`
-WHERE employee=%s
-  AND date=%s
-  AND docstatus=1
-  AND lop=0
+		SELECT 
+			sum(apply_for) AS 'gate_pass_mins'
+		FROM 
+			`tabGate Pass`
+		WHERE 
+			employee=%s
+  			AND date=%s
+  			AND docstatus=1
+  			AND lop=0
 	""",(employee,date),as_dict=1)
 	print(get_pass_details)
 	if len(get_pass_details) >= 1:
@@ -281,6 +292,7 @@ def time_diff_in_hours(start, end):
 
 @frappe.whitelist()
 def add_late_entry(self,method):
+	# self attendance instance
 	import math
 	if not self.status in ["On Leave","Half Day"]:
 		att_settings = frappe.get_doc("Attendance Policies","Attendance Policies")
@@ -391,20 +403,38 @@ def add_late_entry_deduction():
 	from hr_policies.custom_validate import preview_salary_slip_for_late_entry
 	end_date = add_days(today(),-1)
 	start_date = get_first_day(end_date)
-	late_entry_doc = frappe.db.sql("""select employee,sum(hours) as 'hours' from
-		`tabAttendance Extra Entry` where calculated = 0 and
-		YEAR(date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)
-		group by employee;""",as_dict=1)
+	late_entry_doc = frappe.db.sql("""
+		select 
+			employee,sum(hours) as 'hours' 
+		from
+			`tabAttendance Extra Entry` 
+		where 
+			calculated = 0 and
+			YEAR(date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND 
+			MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)
+		group by 
+			employee;
+	""",as_dict=1)
 
-	extra_entry = frappe.db.sql("""select name from
-                `tabAttendance Extra Entry` where calculated = 0 and
-                YEAR(date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH);""",as_dict=1)
+	extra_entry = frappe.db.sql("""
+		select 
+			name 
+		from
+            `tabAttendance Extra Entry` 
+		where 
+			calculated = 0 and
+            YEAR(date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND 
+			MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH);
+	""",as_dict=1)
 
 	for row in late_entry_doc:
 		try:
 			hours = frappe.db.sql("""select office_hours from `tabAttendance` where docstatus = 1 and 
 			employee = %s order by creation desc limit 1;""",(row.employee))
 			salary_slip = preview_salary_slip_for_late_entry(row.employee)
+			frappe.errprint("Employee "+row.employee)
+			frappe.errprint("Salary Slip Gropay")
+			frappe.errprint(salary_slip.gross_pay)
 			day_rate = salary_slip.gross_pay / 30 #salary_slip.total_working_days
 			hourly_rate = 0
 			print(row.employee)
