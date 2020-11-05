@@ -403,6 +403,9 @@ def add_late_entry_deduction():
 	from hr_policies.custom_validate import preview_salary_slip_for_late_entry
 	end_date = add_days(today(),-1)
 	start_date = get_first_day(end_date)
+	frappe.errprint("Start Date "+ str(start_date))
+	frappe.errprint("End Date "+ str(end_date))
+	frappe.errprint("Fiirst Query")
 	late_entry_doc = frappe.db.sql("""
 		select 
 			employee,sum(hours) as 'hours' 
@@ -416,7 +419,7 @@ def add_late_entry_deduction():
 		group by 
 			employee;
 	""",as_dict=1)
-
+	frappe.errprint("Secound Query")
 	extra_entry = frappe.db.sql("""
 		select 
 			name 
@@ -428,8 +431,9 @@ def add_late_entry_deduction():
 			MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)
 			and employee = "EMP-PNI-00847";
 	""",as_dict=1)
-
+	frappe.errprint("Loop Start")
 	for row in late_entry_doc:
+		frappe.errprint("Iterating")
 		try:
 			hours = frappe.db.sql("""select office_hours from `tabAttendance` where docstatus = 1 and 
 			employee = %s order by creation desc limit 1;""",(row.employee))
