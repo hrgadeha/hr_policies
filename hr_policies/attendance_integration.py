@@ -457,7 +457,7 @@ def add_late_entry_deduction():
 				frappe.throw(_("Employee {0} Shift Not Define").format(row.employee))
 		except Exception as e:
 			frappe.log_error(frappe.get_traceback())
-
+	frappe.errprint("Iteration Complete")
 	for id in extra_entry:
 		if id.name:
 			ot = frappe.get_doc("Attendance Extra Entry", id.name)
