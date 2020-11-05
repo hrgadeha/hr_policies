@@ -411,7 +411,8 @@ def add_late_entry_deduction():
 		where 
 			calculated = 0 and
 			YEAR(date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND 
-			MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH) and employee = "EMP-PNI-00847"
+			MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH) 
+			and employee = "EMP-PNI-00847"
 		group by 
 			employee;
 	""",as_dict=1)
@@ -424,7 +425,8 @@ def add_late_entry_deduction():
 		where 
 			calculated = 0 and
             YEAR(date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND 
-			MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH);
+			MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)
+			and employee = "EMP-PNI-00847";
 	""",as_dict=1)
 
 	for row in late_entry_doc:
