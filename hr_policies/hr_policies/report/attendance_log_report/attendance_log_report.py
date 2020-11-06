@@ -35,7 +35,7 @@ def get_data(conditions,filters):
 			from 
 				`tabAttendance Log` as al, `tabEmployee` as emp
 			where 
-				al.employee = emp.name
+				al.employee = emp.name and
 				al.docstatus = 0 
 				%s 
 			order by 
