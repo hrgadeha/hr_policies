@@ -22,15 +22,32 @@ def get_column():
 		_("Punch Time") + ":Time:100"]
 
 def get_data(conditions,filters):
-        invoice = frappe.db.sql("""select employee as 'emp',(select employee_name from `tabEmployee` where name = emp),card_no,
-				date(attendance_time),shift_start_time,shift_end_time,attendance_type,time(attendance_time)
-				from `tabAttendance Log` where docstatus = 0 %s order by date(attendance_time) desc;"""%conditions, filters, as_list=1)
+        invoice = frappe.db.sql("""
+			select 
+				al.employee as 'emp',
+				emp.employee_name,
+				al.card_no,
+				date(al.attendance_time),
+				al.shift_start_time,
+				al.shift_end_time,
+				al.attendance_type,
+				time(al.attendance_time)
+			from 
+				`tabAttendance Log` as al, `tabEmployee` as emp
+			where 
+				al.employee = emp.name
+				al.docstatus = 0 
+				%s 
+			order by 
+				date(al.attendance_time) desc;
+		"""%conditions, filters, as_list=1)
         return invoice
 
 def get_conditions(filters):
 	conditions = ""
-	if filters.get("employee"): conditions += "and employee = %(employee)s"
-	if filters.get("from_date"): conditions += " and date(attendance_time) >= %(from_date)s"
-	if filters.get("to_date"): conditions += " and date(attendance_time)  <= %(to_date)s"
+	if filters.get("employee"): conditions += "and al.employee = %(employee)s"
+	if filters.get("from_date"): conditions += " and date(al.attendance_time) >= %(from_date)s"
+	if filters.get("to_date"): conditions += " and date(al.attendance_time)  <= %(to_date)s"
+	if filters.get("exclude_left"): conditions += " and emp.status  = 'Active' "
 
 	return conditions, filters
