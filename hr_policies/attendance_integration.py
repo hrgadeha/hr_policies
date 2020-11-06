@@ -409,6 +409,9 @@ def add_late_entry_deduction(debug = False):
 		today_date = '2020-11-01'
 		end_date = add_days(today_date,-1)
 		start_date = get_first_day(end_date)
+	today_date = '2020-11-01'
+	end_date = add_days(today_date,-1)
+	start_date = get_first_day(end_date)
 	frappe.errprint("Start Date "+ str(start_date))
 	frappe.errprint("End Date "+ str(end_date))
 	frappe.errprint("Fiirst Query")
@@ -484,9 +487,9 @@ def add_late_entry_deduction(debug = False):
 			if not abs(hours[0][0]) == False and abs(hours[0][0]) > 0:
 				hourly_rate = flt(day_rate) / flt(abs(hours[0][0])) # office hours 10, hourly rate should be 57.66, so day rate 576.6
 				amount = hourly_rate * row.hours # 865 row hours 15 
-				if not debug:
-					add_deduction_for_late_entry(row.employee,end_date,amount) 
-				elif row.employee == emp:
+				
+				add_deduction_for_late_entry(row.employee,end_date,amount) 
+				if row.employee == emp:
 					frappe.errprint("Creating Late Entry")
 					frappe.errprint(row.employee)
 					frappe.errprint(end_date)
@@ -500,7 +503,7 @@ def add_late_entry_deduction(debug = False):
 			frappe.log_error(frappe.get_traceback())
 	frappe.errprint("Iteration Complete")
 	for id in extra_entry:
-		if id.name and not debug:
+		if id.name:
 			ot = frappe.get_doc("Attendance Extra Entry", id.name)
 			ot.calculated = 1
 			ot.save()
