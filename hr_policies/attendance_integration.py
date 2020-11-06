@@ -464,20 +464,23 @@ def add_late_entry_deduction(debug = False):
 		""",(today_date,today_date),as_dict=1)
 	frappe.errprint("Loop Start")
 	for row in late_entry_doc:
-		frappe.errprint("Iterating")
+		if row.employee == emp:
+			frappe.errprint("Iterating")
 		try:
 			hours = frappe.db.sql("""select office_hours from `tabAttendance` where docstatus = 1 and 
 			employee = %s order by creation desc limit 1;""",(row.employee))
 			salary_slip = preview_salary_slip_for_late_entry(row.employee)
-			frappe.errprint("Employee "+row.employee)
-			frappe.errprint("Salary Slip Gropay")
-			frappe.errprint(salary_slip.gross_pay)
+			if row.employee == emp:
+				frappe.errprint("Employee "+row.employee)
+				frappe.errprint("Salary Slip Gropay")
+				frappe.errprint(salary_slip.gross_pay)
 			day_rate = salary_slip.gross_pay / 30 #salary_slip.total_working_days
 			hourly_rate = 0
-			print(row.employee)
-			print(salary_slip.gross_pay)
-			print(salary_slip.total_working_days)
-			print(abs(hours[0][0]))
+			if row.employee == emp:
+				print(row.employee)
+				print(salary_slip.gross_pay)
+				print(salary_slip.total_working_days)
+				print(abs(hours[0][0]))
 			if not abs(hours[0][0]) == False and abs(hours[0][0]) > 0:
 				hourly_rate = flt(day_rate) / flt(abs(hours[0][0])) # office hours 10, hourly rate should be 57.66, so day rate 576.6
 				amount = hourly_rate * row.hours # 865 row hours 15 
@@ -488,8 +491,8 @@ def add_late_entry_deduction(debug = False):
 					frappe.errprint(row.employee)
 					frappe.errprint(end_date)
 					frappe.errprint(amount)
-				print(int(hourly_rate))
-				print(int(amount))
+					print(int(hourly_rate))
+					print(int(amount))
 			else:
 				frappe.throw(_("Employee {0} Shift Not Define").format(row.employee))
 		except Exception as e:
