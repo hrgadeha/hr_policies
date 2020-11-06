@@ -437,7 +437,7 @@ def add_late_entry_deduction(debug = False):
 				MONTH(date) = MONTH({0}::date- INTERVAL 1 MONTH) 
 			group by 
 				employee;
-		""".format(today_date),, as_dict=1)
+		""".format(today_date),as_dict=1)
 	
 	frappe.errprint("Secound Query")
 	extra_entry = frappe.db.sql("""
