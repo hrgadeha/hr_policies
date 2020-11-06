@@ -24,7 +24,7 @@ def get_column():
 def get_data(conditions,filters):
         invoice = frappe.db.sql("""select employee as 'emp',(select employee_name from `tabEmployee` where name = emp),card_no,
 				date(attendance_time),shift_start_time,shift_end_time,attendance_type,time(attendance_time)
-				from `tabAttendance Log` where docstatus = 0 %s;"""%conditions, filters, as_list=1)
+				from `tabAttendance Log` where docstatus = 0 %s order by date(attendance_time) desc;"""%conditions, filters, as_list=1)
         return invoice
 
 def get_conditions(filters):
