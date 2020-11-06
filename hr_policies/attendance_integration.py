@@ -502,11 +502,13 @@ def add_late_entry_deduction(debug = False):
 			frappe.errprint(str(e))
 			frappe.log_error(frappe.get_traceback())
 	frappe.errprint("Iteration Complete")
+	frappe.db.commit()
 	for id in extra_entry:
 		if id.name:
 			ot = frappe.get_doc("Attendance Extra Entry", id.name)
 			ot.calculated = 1
 			ot.save()
+			frappe.db.commit()
 
 def get_shift_for_late_entry(employee,start_date,end_date):
 	shift_data = frappe.db.sql("""select shift from `tabAttendance` where attendance_date between %s and %s limit 1""",(start_date,end_date),as_dict=1)
