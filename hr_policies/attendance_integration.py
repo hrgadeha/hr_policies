@@ -491,8 +491,8 @@ def add_late_entry_deduction(debug = False):
 					frappe.errprint(row.employee)
 					frappe.errprint(end_date)
 					frappe.errprint(amount)
-					print(int(hourly_rate))
-					print(int(amount))
+					frappe.errprint(hourly_rate)
+					frappe.errprint(row.hours)
 			else:
 				frappe.throw(_("Employee {0} Shift Not Define").format(row.employee))
 		except Exception as e:
