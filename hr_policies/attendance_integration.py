@@ -527,7 +527,7 @@ def get_shift_for_late_entry(employee,start_date,end_date):
 def add_deduction_for_late_entry(employee,date,amount):
 	doc = frappe.get_doc(dict(
 		doctype = "Additional Salary",
-		payroll_date = datetime.today() - timedelta(days=1),
+		payroll_date = date,
 		employee = employee,
 		company = frappe.db.get_value("Global Defaults","Global Defaults","default_company"),
 		salary_component = frappe.db.get_single_value('Late Entry Policies', 'late_entry_deduction_component'),
