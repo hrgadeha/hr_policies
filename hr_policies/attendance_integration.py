@@ -433,11 +433,11 @@ def add_late_entry_deduction(debug = False):
 				`tabAttendance Extra Entry` 
 			where 
 				calculated = 0 and
-				YEAR(date) = YEAR({0}::date - INTERVAL 1 MONTH) AND 
-				MONTH(date) = MONTH({0}::date- INTERVAL 1 MONTH) 
+				YEAR(date) = YEAR(%s - INTERVAL 1 MONTH) AND 
+				MONTH(date) = MONTH(%s - INTERVAL 1 MONTH) 
 			group by 
 				employee;
-		""".format(today_date),as_dict=1)
+		""",(today_date,today_date), as_dict=1)
 	
 	frappe.errprint("Secound Query")
 	extra_entry = frappe.db.sql("""
@@ -459,9 +459,9 @@ def add_late_entry_deduction(debug = False):
 				`tabAttendance Extra Entry` 
 			where 
 				calculated = 0 and
-				YEAR(date) = YEAR({0}::date - INTERVAL 1 MONTH) AND 
-				MONTH(date) = MONTH({0}::date - INTERVAL 1 MONTH);
-		""".format(today_date),as_dict=1)
+				YEAR(date) = YEAR(%s - INTERVAL 1 MONTH) AND 
+				MONTH(date) = MONTH(%s - INTERVAL 1 MONTH);
+		""",(today_date,today_date),as_dict=1)
 	frappe.errprint("Loop Start")
 	for row in late_entry_doc:
 		frappe.errprint("Iterating")
