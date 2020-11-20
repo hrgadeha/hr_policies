@@ -16,7 +16,11 @@
   "attendance",
   "column_break_10",
   "shift_start_time",
-  "shift_end_time"
+  "shift_end_time",
+  "actual_shift_start",
+  "actual_shift_end",
+  "shift_start",
+  "shift_end"
  ],
  "fields": [
   {
@@ -89,9 +93,29 @@
    "fieldtype": "Time",
    "label": "Shift End Time",
    "read_only": 1
+  },
+  {
+   "fieldname": "actual_shift_start",
+   "fieldtype": "Datetime",
+   "label": "Actual Shift Start"
+  },
+  {
+   "fieldname": "actual_shift_end",
+   "fieldtype": "Datetime",
+   "label": "Actual Shift End"
+  },
+  {
+   "fieldname": "shift_start",
+   "fieldtype": "Datetime",
+   "label": "Shift Start"
+  },
+  {
+   "fieldname": "shift_end",
+   "fieldtype": "Datetime",
+   "label": "Shift End"
   }
  ],
- "modified": "2020-08-28 16:02:23.328010",
+ "modified": "2020-11-08 22:53:57.916354",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Attendance Log",

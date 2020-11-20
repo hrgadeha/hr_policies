@@ -190,6 +190,9 @@ scheduler_events = {
 		"0 9 * * *":[
 			"hr_policies.attendance_integration.process_attendance"
 		],
+		"0 18 * * *":[
+                        "hr_policies.attendance_integration.process_attendance_night_shift"
+                ],
 		"30 23 * * Sun":[
 			"hr_policies.process_attendance.process_sandwich_leave_weekly"
 		],
