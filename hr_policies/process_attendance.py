@@ -73,7 +73,7 @@ def check_leave(self,date):
 		['from_date', '<=', date],
 		['to_date', '>=',date],
 		['half_day', '=',0],
-		['leave_type', '=',"Leave Without Pay"]
+		['leave_type', 'in',["Leave Without Pay","Miss Punch"]]
 	]
 	leave_application = frappe.get_all("Leave Application",filters=filters,fields=["name"])
 	frappe.errprint(leave_application)

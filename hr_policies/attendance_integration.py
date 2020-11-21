@@ -6,6 +6,8 @@ from datetime import datetime,timedelta
 from erpnext.hr.doctype.salary_structure.salary_structure import make_salary_slip
 from frappe.model.mapper import get_mapped_doc
 from erpnext.hr.doctype.employee.employee import get_holiday_list_for_employee
+from erpnext.hr.doctype.shift_assignment.shift_assignment import get_actual_start_end_datetime_of_shift
+from erpnext.hr.doctype.shift_assignment.shift_assignment import get_shift_details
 import json
 from ast import literal_eval
 import itertools
@@ -18,11 +20,20 @@ def update_attendance_log(self,method):
 		shift = frappe.db.get_value("Employee",employee,"default_shift")
 		frappe.errprint(shift)
 		if shift:
+			shift_actual_timings = get_actual_start_end_datetime_of_shift(employee, get_datetime(self.attendance_time), True)
+			frappe.errprint(shift_actual_timings)
 			self.shift = shift
 			self.shift_start_time = frappe.db.get_value("Shift Type",shift,"start_time")
 			self.shift_end_time = frappe.db.get_value("Shift Type",shift,"end_time")
-			# self._shift_type = frappe.db.get_value("Shift Type",shift,"shift_type")
-		new_log_type = check_last_log(employee,self.attendance_time, self)
+			self.actual_shift_start = shift_actual_timings[0]
+			self.actual_shift_end = shift_actual_timings[1]
+			self.shift_start = shift_actual_timings[2].start_datetime
+			self.shift_end = shift_actual_timings[2].end_datetime
+		new_log_type = ''
+		if frappe.db.get_value("Shift Type",shift,"shift_type") == "Night Shift":
+			new_log_type = check_last_log_night_shift(employee,shift_actual_timings)
+		else:
+			new_log_type = check_last_log(employee,self.attendance_time)
 		self.employee = employee
 		self.attendance_type = new_log_type
 
@@ -44,19 +55,8 @@ def check_last_log(employee,date, attendance_log = None):
 	else:
 		return 'IN'
 
-def get_night_shift_punch_type(employee, date, attendance_log):
-	log_data = frappe.db.sql("""
-		select 
-			attendance_type 
-		from 
-			`tabAttendance Log` 
-		where 
-			employee=%s and 
-			DATE(attendance_time)=%s 
-		order by 
-			creation desc
-	""",(employee,getdate(date)),as_dict=1)
-	
+def check_last_log_night_shift(employee,shift_actual_timings):
+	log_data = frappe.db.sql("""select attendance_type from `tabAttendance Log` where employee=%s and attendance_time between %s and %s order by creation desc""",(employee,shift_actual_timings[0],shift_actual_timings[1]),as_dict=1)
 	if log_data:
 		if log_data[0].attendance_type == "IN":
 			return 'OUT'
@@ -64,7 +64,6 @@ def get_night_shift_punch_type(employee, date, attendance_log):
 			return 'IN'
 	else:
 		return 'IN'
-	return ""
 def get_employee_from_card(card):
 	employee = frappe.get_all("Employee",filters={"card_no":card},fields=["name"])
 	if employee:
@@ -74,11 +73,12 @@ def get_employee_from_card(card):
 
 @frappe.whitelist()
 def run_attendance_manually():
-	start_date = '2020-11-01'
-	end_date = '2020-11-02'
+	start_date = '2020-10-10'
+	end_date = '2020-10-15'
 	while getdate(start_date) <= getdate(end_date):
 		print('Attendance Process Start For Date ' + str(start_date))
 		process_attendance(start_date)
+		process_attendance_night_shift(start_date)
 		start_date = add_days(start_date,1)
 
 @frappe.whitelist()
@@ -86,7 +86,7 @@ def process_attendance(date=None):
 	try:
 		if date == None:
 			date = add_days(today(),-1)
-		shift_data = frappe.get_all("Shift Type",filters={},fields=["name","start_time","end_time"])
+		shift_data = frappe.get_all("Shift Type",filters={"shift_type":"Day Shift"},fields=["name","start_time","end_time"])
 		employee_list_logs = []
 		for shift in shift_data:
 			"""
@@ -116,6 +116,44 @@ def process_attendance(date=None):
 							create_attendance(logs[0].employee,getdate(logs[0].attendance_time),in_time,out_time,total_hours,early_exit,late_entry,miss_punch,shift)
 							print("Attendance Creation Done")
 						print("Attendance creaetion or create holiday attendance done")
+						employee_list_logs.append(logs[0].employee)
+					except Exception as e:
+						print('exception')
+						frappe.log_error(frappe.get_traceback())
+		create_lwp_for_missing_employee(employee_list_logs,date)
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback())
+
+
+@frappe.whitelist()
+def process_attendance_night_shift(date=None):
+	try:
+		print('night shift data processing started')
+		if date == None:
+			date = add_days(today(),-1)
+		shift_data = frappe.get_all("Shift Type",filters={"shift_type":"Night Shift"},fields=["name","start_time","end_time"])
+		employee_list_logs = []
+		for shift in shift_data:
+			# filters = {
+			# 	"shift":shift.name
+			# }
+			shift_details = get_shift_details(shift.name,for_date=get_datetime(date))
+			print(shift_details)
+			attendance_log = frappe.db.sql("""select * from `tabAttendance Log` where shift=%s and attendance_time between %s and %s order by employee,attendance_time""",(shift.name,shift_details.get('actual_start'),shift_details.get('actual_end')),as_dict=1)
+			# attendance_log = frappe.get_all("Attendance Log",fields="*",filters=filters, order_by="employee,attendance_time")
+			print(attendance_log)
+			for key, group in itertools.groupby(attendance_log, key=lambda x: (x['employee'], x['shift_start_time'])):
+				print(key)
+				# frappe.errprint(list(group))
+				logs = list(group)
+				if logs:
+					try:
+						in_time,out_time,total_hours,early_exit,late_entry,miss_punch = get_attendance_details(shift,logs)
+						holiday_list = get_holiday_list_for_employee(logs[0].employee)
+						if check_holiday(getdate(logs[0].attendance_time),holiday_list):
+							create_holiday_attendance(logs[0].employee,getdate(logs[0].attendance_time),in_time,out_time,total_hours)
+						else:
+							create_attendance(logs[0].employee,getdate(logs[0].attendance_time),in_time,out_time,total_hours,early_exit,late_entry,miss_punch,shift)
 						employee_list_logs.append(logs[0].employee)
 					except Exception as e:
 						print('exception')
@@ -167,6 +205,48 @@ def get_attendance_details(shift_details,logs):
 		total_hours += time_diff_in_hours(logs[0].attendance_time,logs[1].attendance_time) #calculate total working hours
 		del logs[:2]
 	if get_time(in_time) > get_time(shift_details.start_time) and time_diff_in_hours(str(shift_details.start_time),str(in_time))*60 > flt(late_allowance_for):
+		print('late_entry')
+		if last_logs:
+			gate_pass_details = get_gatepass_details(last_logs[0].employee,getdate(last_logs[0].attendance_time))
+			print(gate_pass_details)
+			if gate_pass_details:
+				for gate_row in gate_pass_details:
+					print('inside')
+					print(get_time(gate_row.from_time))
+					if get_time(gate_row.from_time) <= get_time(shift_details.start_time) and get_time(gate_row.to_time) >= get_time(shift_details.start_time):
+						late_entry =False
+					else:
+						late_entry = True
+			else:
+				late_entry = True
+		else:
+			late_entry = True
+	if get_time(out_time) < get_time(shift_details.end_time):
+		print('early exit')
+		early_exit = True
+	return in_time,out_time,total_hours,early_exit,late_entry,miss_punch
+
+def get_attendance_details_night_shift(shift_details,logs):
+	print('in')
+	late_allowance_for = frappe.db.get_value("Attendance Policies","Attendance Policies","late_allowance_for")
+	last_logs = logs
+	total_hours = 0
+	in_time = out_time = None
+	late_entry = early_exit = miss_punch = False
+	in_time = get_time(logs[0].attendance_time)
+	if len(logs) >= 2:
+		out_time = get_time(logs[-1].attendance_time)
+	else:
+		out_time = get_time(logs[0].attendance_time)
+	if not len(logs) % 2 == 0:
+		miss_punch = True
+		create_miss_punch_entry(logs[-1].employee,getdate(logs[0].attendance_time),logs[-1].attendance_type,get_time(logs[-1].attendance_time))
+		print('Miss Punch')
+	logs = logs[:]
+	while len(logs) >= 2:
+		total_hours += time_diff_in_hours(logs[0].attendance_time,logs[1].attendance_time)
+		del logs[:2]
+	if get_time(in_time) > get_time(shift_details.start_time) and time_diff_in_hours(str(shift_details.start_time),str(in_time)) > flt(late_allowance_for):
 		print('late_entry')
 		if last_logs:
 			gate_pass_details = get_gatepass_details(last_logs[0].employee,getdate(last_logs[0].attendance_time))
@@ -242,7 +322,7 @@ def create_attendance(employee,attendance_date,in_time,out_time,total_hours,earl
 		working_hours = working_hours,
 		office_hours = abs(office_hours),
 		miss_punch = miss_punch,
-		overtime = flt(working_hours)-flt(office_hours) if flt(working_hours) > flt(office_hours) else 0
+		overtime = flt(working_hours)-abs(flt(office_hours)) if flt(working_hours) > abs(flt(office_hours)) else 0
 	)).insert(ignore_permissions = True)
 	if not attendance_doc.miss_punch:
 		attendance_doc.submit()
@@ -540,3 +620,4 @@ def add_deduction_for_late_entry(employee,date,amount):
 @frappe.whitelist()
 def get_last_id_attendance():
 	return frappe.db.get_value("Attendance Machine Settings","Attendance Machine Settings","last_number")
+
