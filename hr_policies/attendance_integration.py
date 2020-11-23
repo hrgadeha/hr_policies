@@ -72,9 +72,9 @@ def get_employee_from_card(card):
 		return False
 
 @frappe.whitelist()
-def run_attendance_manually():
-	start_date = '2020-10-10'
-	end_date = '2020-10-15'
+def run_attendance_manually(from_date,to_date):
+	start_date = from_date
+	end_date = to_date
 	while getdate(start_date) <= getdate(end_date):
 		print('Attendance Process Start For Date ' + str(start_date))
 		process_attendance(start_date)
