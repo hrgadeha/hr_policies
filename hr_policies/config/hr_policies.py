@@ -163,6 +163,32 @@ def get_data():
                         ]
                 },
 		{
+                        "label": _("Shift Managemment"),
+                        "items": [
+                                {
+                                        "type": "doctype",
+                                        "name": "Shift Request",
+                                        "label": "Shift Request",
+                                        "description": _("Shift Request"),
+                                        "onboard": 1
+                                },
+								{
+                                        "type": "doctype",
+                                        "name": "Update Shift Request",
+                                        "label": "Update Shift Request",
+                                        "description": _("Update Shift Request"),
+                                        "onboard": 1
+                                },
+								{
+                                        "type": "doctype",
+                                        "name": "Shift Assignment",
+                                        "label": "Shift Assignment",
+                                        "description": _("Shift Assignment"),
+                                        "onboard": 1
+                                }
+                        ]
+                },
+		{
                         "label": _("Report"),
                         "items": [
                                 {
