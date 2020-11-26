@@ -69,8 +69,16 @@ def run_attendance_manually(from_date,to_date):
 	start_date = from_date
 	end_date = to_date
 	while getdate(start_date) <= getdate(end_date):
-		print('Attendance Process Start For Date ' + str(start_date))
+		print('(Day Shift) Attendance Process Start For Date ' + str(start_date))
 		process_attendance(start_date)
+		start_date = add_days(start_date,1)
+
+@frappe.whitelist()
+def run_attendance_manually_night(from_date,to_date):
+	start_date = from_date
+	end_date = to_date
+	while getdate(start_date) <= getdate(end_date):
+		print('(Night Shift) Attendance Process Start For Date ' + str(start_date))
 		process_attendance_night_shift(start_date)
 		start_date = add_days(start_date,1)
 
@@ -456,7 +464,7 @@ def add_late_entry_deduction():
 	end_date = add_days(today(),-1)
 	start_date = get_first_day(end_date)
 	late_entry_doc = frappe.db.sql("""select employee,sum(hours) as 'hours' from
-		`tabAttendance Extra Entry` where calculated = 0 and
+		`tabAttendance Extra Entry` where calculated = 0 and ignore_penalty = 0 and
 		YEAR(date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)
 		group by employee;""",as_dict=1)
 

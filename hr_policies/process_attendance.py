@@ -50,7 +50,7 @@ def check_weekly_leave(employee,from_date,to_date):
 		['from_date', '>=', from_date],
 		['to_date', '<=',to_date],
 		['docstatus','=',1],
-		['leave_type', '=', 'Leave Without Pay']
+		['leave_type', 'in',["Leave Without Pay","Miss Punch"]]
 	]
 	leave_application = frappe.get_all("Leave Application",filters=filters,fields=["name"])
 	if len(leave_application) > 1:
