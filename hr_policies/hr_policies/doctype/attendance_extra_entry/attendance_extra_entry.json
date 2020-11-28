@@ -9,7 +9,8 @@
   "is_employee",
   "hours",
   "date",
-  "type"
+  "type",
+  "ignore_penalty"
  ],
  "fields": [
   {
@@ -48,9 +49,16 @@
    "in_list_view": 1,
    "label": "Type",
    "options": "\nLate Entry\nEarly Exit\nLess Hours By Labour"
+  },
+  {
+   "default": "0",
+   "fieldname": "ignore_penalty",
+   "fieldtype": "Check",
+   "label": "Ignore Penalty",
+   "permlevel": 2
   }
  ],
- "modified": "2020-09-17 23:21:50.172089",
+ "modified": "2020-11-26 21:27:16.121835",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Attendance Extra Entry",

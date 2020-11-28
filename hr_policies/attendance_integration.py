@@ -76,8 +76,16 @@ def run_attendance_manually(from_date,to_date):
 	start_date = from_date
 	end_date = to_date
 	while getdate(start_date) <= getdate(end_date):
-		print('Attendance Process Start For Date ' + str(start_date))
+		print('(Day Shift) Attendance Process Start For Date ' + str(start_date))
 		process_attendance(start_date)
+		start_date = add_days(start_date,1)
+
+@frappe.whitelist()
+def run_attendance_manually_night(from_date,to_date):
+	start_date = from_date
+	end_date = to_date
+	while getdate(start_date) <= getdate(end_date):
+		print('(Night Shift) Attendance Process Start For Date ' + str(start_date))
 		process_attendance_night_shift(start_date)
 		start_date = add_days(start_date,1)
 
@@ -483,69 +491,15 @@ def add_late_entry_deduction(debug = False):
 	from hr_policies.custom_validate import preview_salary_slip_for_late_entry
 	end_date = add_days(today(),-1)
 	start_date = get_first_day(end_date)
-	emp = ""
-	if debug:
-		emp = "EMP-PNI-00985"
-		today_date = '2020-11-01'
-		end_date = add_days(today_date,-1)
-		start_date = get_first_day(end_date)
-	today_date = '2020-11-01'
-	end_date = add_days(today_date,-1)
-	start_date = get_first_day(end_date)
-	frappe.errprint("Start Date "+ str(start_date))
-	frappe.errprint("End Date "+ str(end_date))
-	frappe.errprint("Fiirst Query")
-	late_entry_doc = frappe.db.sql("""
-		select 
-			employee,sum(hours) as 'hours' 
-		from
-			`tabAttendance Extra Entry` 
-		where 
-			calculated = 0 and
-			YEAR(date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND 
-			MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH) 
-		group by 
-			employee;
-	""",as_dict=1)
-	
-	if debug:
-		late_entry_doc = frappe.db.sql("""
-			select 
-				employee,sum(hours) as 'hours' 
-			from
-				`tabAttendance Extra Entry` 
-			where 
-				calculated = 0 and
-				YEAR(date) = YEAR(%s - INTERVAL 1 MONTH) AND 
-				MONTH(date) = MONTH(%s - INTERVAL 1 MONTH) 
-			group by 
-				employee;
-		""",(today_date,today_date), as_dict=1)
-	
-	frappe.errprint("Secound Query")
-	extra_entry = frappe.db.sql("""
-		select 
-			name 
-		from
-            `tabAttendance Extra Entry` 
-		where 
-			calculated = 0 and
-            YEAR(date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND 
-			MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH);
-	""",as_dict=1)
+	late_entry_doc = frappe.db.sql("""select employee,sum(hours) as 'hours' from
+		`tabAttendance Extra Entry` where calculated = 0 and ignore_penalty = 0 and
+		YEAR(date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)
+		group by employee;""",as_dict=1)
 
-	if debug:
-		extra_entry = frappe.db.sql("""
-			select 
-				name 
-			from
-				`tabAttendance Extra Entry` 
-			where 
-				calculated = 0 and
-				YEAR(date) = YEAR(%s - INTERVAL 1 MONTH) AND 
-				MONTH(date) = MONTH(%s - INTERVAL 1 MONTH);
-		""",(today_date,today_date),as_dict=1)
-	frappe.errprint("Loop Start")
+	extra_entry = frappe.db.sql("""select name from
+                `tabAttendance Extra Entry` where calculated = 0 and
+                YEAR(date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND MONTH(date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH);""",as_dict=1)
+
 	for row in late_entry_doc:
 		if row.employee == emp:
 			frappe.errprint("Iterating")

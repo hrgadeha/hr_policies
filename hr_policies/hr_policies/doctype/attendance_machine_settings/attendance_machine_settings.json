@@ -6,9 +6,15 @@
  "field_order": [
   "last_number",
   "section_break_2",
+  "for_day_shift",
   "from_date",
   "to_date",
-  "process_attendance_manually"
+  "process_attendance_manually",
+  "column_break_6",
+  "for_night_shift",
+  "from_date_night",
+  "to_date_night",
+  "process_attendance_manually_night"
  ],
  "fields": [
   {
@@ -36,10 +42,39 @@
    "fieldname": "process_attendance_manually",
    "fieldtype": "Button",
    "label": "Process Attendance Manually "
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "from_date_night",
+   "fieldtype": "Date",
+   "label": "From Date"
+  },
+  {
+   "fieldname": "to_date_night",
+   "fieldtype": "Date",
+   "label": "To Date"
+  },
+  {
+   "fieldname": "process_attendance_manually_night",
+   "fieldtype": "Button",
+   "label": "Process Attendance Manually "
+  },
+  {
+   "fieldname": "for_day_shift",
+   "fieldtype": "Heading",
+   "label": "For Day Shift"
+  },
+  {
+   "fieldname": "for_night_shift",
+   "fieldtype": "Heading",
+   "label": "For Night Shift"
   }
  ],
  "issingle": 1,
- "modified": "2020-11-22 22:07:48.622953",
+ "modified": "2020-11-26 21:00:01.458757",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Attendance Machine Settings",
