@@ -19,7 +19,7 @@ attendance_date: frm.doc.miss_punch_date
 callback:function(r){
 	var len=r.message.length;
 	    if(!r.message){
-	        frm.set_value("punch_time","");
+//	        frm.set_value("punch_time","");
 	        frm.set_value("attendance","");
 	        frappe.throw("No Miss Punch Found On Selected Date, Please Select Valid Date");
 	    }
@@ -71,7 +71,7 @@ attendance_date: frm.doc.miss_punch_date
 callback:function(r){
 	var len=r.message.length;
 	    if(!r.message){
-	        frm.set_value("punch_time","");
+//	        frm.set_value("punch_time","");
 	        frm.set_value("attendance","");
 	        frappe.throw("No Miss Punch Found On Selected Date, Please Select Valid Date");
 	    }
@@ -184,7 +184,7 @@ frappe.ui.form.on("Miss Punch Application", {
   "punch_type": function(frm) {
         if(frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch" && frm.doc.punch_type == "In"){
     frappe.call({
-    "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getOUTpunch",
+    "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getMaxpunch",
 args: {
 employee: frm.doc.employee,
 attendance_date: frm.doc.miss_punch_date
@@ -205,7 +205,7 @@ frappe.ui.form.on("Miss Punch Application", {
   "punch_type": function(frm) {
         if(frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch" && frm.doc.punch_type == "Out"){
     frappe.call({
-    "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getINpunch",
+    "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getMinpunch",
 args: {
 employee: frm.doc.employee,
 attendance_date: frm.doc.miss_punch_date
