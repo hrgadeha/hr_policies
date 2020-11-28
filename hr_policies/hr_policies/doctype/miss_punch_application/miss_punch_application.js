@@ -7,28 +7,30 @@ frappe.ui.form.on('Miss Punch Application', {
 });
 
 frappe.ui.form.on("Miss Punch Application", {
-    "miss_punch_date": function(frm) {
-        if (frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch") {
-            frappe.call({
-                "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getattendance",
-                args: {
-                    employee: frm.doc.employee,
-                    attendance_date: frm.doc.miss_punch_date
-                },
-                callback: function(r) {
-                    var len = r.message.length;
-                    if (!r.message) {
-                        frm.set_value("punch_time", "");
-                        frm.set_value("attendance", "");
-                        frappe.throw("No Miss Punch Found On Selected Date, Please Select Valid Date");
-                    } else {
-                        //frm.set_value("punch_time",r.message[0][1]);
-                        frm.set_value("attendance", r.message[0][0]);
-                    }
-                }
-            });
-        }
-    }
+  "miss_punch_date": function(frm) {
+	if(frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch"){
+    frappe.call({
+    "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getattendance",
+args: {
+employee: frm.doc.employee,
+attendance_date: frm.doc.miss_punch_date
+},
+callback:function(r){
+	var len=r.message.length;
+	    if(!r.message){
+//	        frm.set_value("punch_time","");
+	        frm.set_value("attendance","");
+	        frappe.throw("No Miss Punch Found On Selected Date, Please Select Valid Date");
+	    }
+	    else{
+//	        frm.set_value("punch_time",r.message[0][1]);
+	        frm.set_value("attendance",r.message[0][0]);
+	    }
+	}
+    });
+
+	}
+	}
 });
 
 
@@ -56,29 +58,30 @@ frappe.ui.form.on("Miss Punch Application", {
 });
 
 frappe.ui.form.on("Miss Punch Application", {
-    "employee": function(frm) {
-        if (frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch") {
-            frappe.call({
-                "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getattendance",
-                args: {
-                    employee: frm.doc.employee,
-                    attendance_date: frm.doc.miss_punch_date
-                },
-                callback: function(r) {
-                    var len = r.message.length;
-                    if (!r.message) {
-                        frm.set_value("punch_time", "");
-                        frm.set_value("attendance", "");
-                        frappe.throw("No Miss Punch Found On Selected Date, Please Select Valid Date");
-                    } else {
-                        //	        frm.set_value("punch_time",r.message[0][1]);
-                        frm.set_value("attendance", r.message[0][0]);
-                    }
-                }
-            });
+  "employee": function(frm) {
+	if(frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch"){
+    frappe.call({
+    "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getattendance",
+args: {
+employee: frm.doc.employee,
+attendance_date: frm.doc.miss_punch_date
+},
+callback:function(r){
+	var len=r.message.length;
+	    if(!r.message){
+//	        frm.set_value("punch_time","");
+	        frm.set_value("attendance","");
+	        frappe.throw("No Miss Punch Found On Selected Date, Please Select Valid Date");
+	    }
+	    else{
+//	        frm.set_value("punch_time",r.message[0][1]);
+	        frm.set_value("attendance",r.message[0][0]);
+	    }
+	}
+    });
 
-        }
-    }
+	}
+	}
 });
 
 
@@ -175,42 +178,38 @@ frappe.ui.form.on('Miss Punch Application', 'last_punch_time', function(frm) {
 
 
 frappe.ui.form.on("Miss Punch Application", {
-    "punch_type": function(frm) {
-        if (frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch" && frm.doc.punch_type == "In") {
-            frappe.call({
-                "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getOUTpunch",
-                args: {
-                    employee: frm.doc.employee,
-                    attendance_date: frm.doc.miss_punch_date
-                },
-                callback: function(r) {
-                    var len = r.message.length;
-                    frm.set_value("exit_time", r.message[0][0]);
-                    frm.set_value("last_punch_time", "00:00:00");
-                    frm.set_df_property('exit_time', 'read_only', 1);
-                    frm.set_df_property('last_punch_time', 'read_only', 0);
-                }
-            });
+  "punch_type": function(frm) {
+        if(frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch" && frm.doc.punch_type == "In"){
+    frappe.call({
+    "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getMaxpunch",
+args: {
+employee: frm.doc.employee,
+attendance_date: frm.doc.miss_punch_date
+},
+callback:function(r){
+        var len=r.message.length;
+            frm.set_value("exit_time",r.message[0][0]);
+            frm.set_value("last_punch_time","00:00:00");
+            frm.set_df_property('exit_time',  'read_only', 1);
+            frm.set_df_property('last_punch_time',  'read_only', 0);
         }
     }
 });
 
 frappe.ui.form.on("Miss Punch Application", {
-    "punch_type": function(frm) {
-        if (frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch" && frm.doc.punch_type == "Out") {
-            frappe.call({
-                "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getINpunch",
-                args: {
-                    employee: frm.doc.employee,
-                    attendance_date: frm.doc.miss_punch_date
-                },
-                callback: function(r) {
-                    frm.set_value("last_punch_time", r.message[0][0]);
-                    frm.set_value("exit_time", "00:00:00");
-                    frm.set_df_property('last_punch_time', 'read_only', 1);
-                    frm.set_df_property('exit_time', 'read_only', 0);
-                }
-            });
+  "punch_type": function(frm) {
+        if(frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch" && frm.doc.punch_type == "Out"){
+    frappe.call({
+    "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getMinpunch",
+args: {
+employee: frm.doc.employee,
+attendance_date: frm.doc.miss_punch_date
+},
+callback:function(r){
+            frm.set_value("last_punch_time",r.message[0][0]);
+            frm.set_value("exit_time","00:00:00");
+            frm.set_df_property('last_punch_time',  'read_only', 1);
+            frm.set_df_property('exit_time',  'read_only', 0);
         }
     }
 });
