@@ -81,6 +81,25 @@ frappe.ui.form.on('Gate Pass', {
 });
 
 frappe.ui.form.on('Gate Pass', {
+        validate(frm) {
+                if(frm.doc.from_time > frm.doc.to_time){
+                    frappe.throw("To Time Can Not Be Less Then From Time");
+			validated = false;
+                }
+
+                else{
+                    var startTime = moment(frm.doc.from_time, "HH:mm:ss a");
+	            var endTime = moment(frm.doc.to_time, "HH:mm:ss a");
+                    var duration = moment.duration(endTime.diff(startTime));
+                    var hours = (endTime.diff(startTime, 'hours')) * 60;
+                    var mins = moment.utc(moment(endTime, "HH:mm:ss").diff(moment(startTime, "HH:mm:ss"))).format("mm");
+                    var total_min = parseInt(hours) + parseInt(mins);
+        		frm.set_value("apply_for",total_min);
+                }
+        }
+});
+
+frappe.ui.form.on('Gate Pass', {
 	validate(frm) {
 		if(frm.doc.from_time > frm.doc.to_time){
 		    frappe.throw("To Time Can Not Be Less Then From Time");

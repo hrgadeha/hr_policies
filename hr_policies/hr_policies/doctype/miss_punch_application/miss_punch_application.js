@@ -1,6 +1,8 @@
 // Copyright (c) 2020, Hardik gadesha and contributors
 // For license information, please see license.txt
 
+
+
 frappe.ui.form.on('Miss Punch Application', {
 	// refresh: function(frm) {
 
@@ -19,12 +21,10 @@ attendance_date: frm.doc.miss_punch_date
 callback:function(r){
 	var len=r.message.length;
 	    if(!r.message){
-//	        frm.set_value("punch_time","");
 	        frm.set_value("attendance","");
 	        frappe.throw("No Miss Punch Found On Selected Date, Please Select Valid Date");
 	    }
 	    else{
-//	        frm.set_value("punch_time",r.message[0][1]);
 	        frm.set_value("attendance",r.message[0][0]);
 	    }
 	}
@@ -71,12 +71,10 @@ attendance_date: frm.doc.miss_punch_date
 callback:function(r){
 	var len=r.message.length;
 	    if(!r.message){
-//	        frm.set_value("punch_time","");
 	        frm.set_value("attendance","");
 	        frappe.throw("No Miss Punch Found On Selected Date, Please Select Valid Date");
 	    }
 	    else{
-//	        frm.set_value("punch_time",r.message[0][1]);
 	        frm.set_value("attendance",r.message[0][0]);
 	    }
 	}
@@ -130,7 +128,7 @@ frappe.ui.form.on('Miss Punch Application',  'validate',  function(frm) {
                 var hours1 = parseInt(hoursMinutes1[0], 10);
                 var minutes1 = hoursMinutes1[1] ? parseInt(hoursMinutes1[1], 10) : 0;
                 var exit = hours1 + minutes1 / 60;
-                if (exit < entry) {
+                if (exit < entry && frm.doc.shift_type == "Day Shift") {
                         frappe.throw("Check out time should be greater than check in time");
 			validated = false;
                 }
@@ -152,7 +150,7 @@ frappe.ui.form.on('Miss Punch Application',  'exit_time',  function(frm) {
                 var hours1 = parseInt(hoursMinutes1[0], 10);
                 var minutes1 = hoursMinutes1[1] ? parseInt(hoursMinutes1[1], 10) : 0;
                 var exit = hours1 + minutes1 / 60;
-                if (exit < entry) {
+                if (exit < entry && frm.doc.shift_type == "Day Shift") {
                         frappe.throw("Check out time should be greater than check in time");
                 }
 	}
@@ -173,15 +171,15 @@ frappe.ui.form.on('Miss Punch Application',  'last_punch_time',  function(frm) {
                 var hours1 = parseInt(hoursMinutes1[0], 10);
                 var minutes1 = hoursMinutes1[1] ? parseInt(hoursMinutes1[1], 10) : 0;
                 var exit = hours1 + minutes1 / 60;
-                if (exit < entry) {
+                if (exit < entry && frm.doc.shift_type == "Day Shift") {
                         frappe.throw("Check out time should be greater than check in time");
                 }
 	}
 });
 
-
 frappe.ui.form.on("Miss Punch Application", {
   "punch_type": function(frm) {
+      if(frm.doc.shift_type == "Day Shift"){
         if(frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch" && frm.doc.punch_type == "In"){
     frappe.call({
     "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getMaxpunch",
@@ -190,13 +188,32 @@ employee: frm.doc.employee,
 attendance_date: frm.doc.miss_punch_date
 },
 callback:function(r){
-        var len=r.message.length;
+            console.log(r.message);
             frm.set_value("exit_time",r.message[0][0]);
             frm.set_value("last_punch_time","00:00:00");
             frm.set_df_property('exit_time',  'read_only', 1);
             frm.set_df_property('last_punch_time',  'read_only', 0);
         }
     });
+}
+}
+    if(frm.doc.shift_type == "Night Shift"){
+        if(frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch" && frm.doc.punch_type == "In"){
+    frappe.call({
+    "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getMaxpunch_Night",
+args: {
+employee: frm.doc.employee,
+attendance_date: frm.doc.miss_punch_date
+},
+callback:function(r){
+            console.log(r.message);
+            frm.set_value("exit_time",r.message[0][0]);
+            frm.set_value("last_punch_time","00:00:00");
+            frm.set_df_property('exit_time',  'read_only', 1);
+            frm.set_df_property('last_punch_time',  'read_only', 0);
+        }
+    });
+}
 }
 }
 });
@@ -251,3 +268,5 @@ frappe.ui.form.on("Miss Punch Application", {
         }
 }
 });
+
+
