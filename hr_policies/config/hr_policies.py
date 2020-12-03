@@ -196,6 +196,12 @@ def get_data():
 					"is_query_report": True,
                                         "name": "Attendance Log Report",
                                         "doctype": "Attendance Log"
+                                },
+								{
+                                        "type": "report",
+										"is_query_report": True,
+                                        "name": "Employee Attendance Report",
+                                        "doctype": "Attendance Log"
                                 }
                         ]
                 }

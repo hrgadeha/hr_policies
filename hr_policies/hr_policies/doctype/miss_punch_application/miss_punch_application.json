@@ -13,6 +13,7 @@
   "miss_punch_date",
   "section_break_5",
   "default_shift",
+  "shift_type",
   "start_time",
   "end_time",
   "column_break_11",
@@ -175,10 +176,18 @@
   {
    "fieldname": "section_break_20",
    "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "default_shift.shift_type",
+   "fieldname": "shift_type",
+   "fieldtype": "Select",
+   "label": "Shift Type",
+   "options": "\nDay Shift\nNight Shift",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
- "modified": "2020-10-16 23:44:41.526746",
+ "modified": "2020-12-02 22:30:13.650357",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Miss Punch Application",

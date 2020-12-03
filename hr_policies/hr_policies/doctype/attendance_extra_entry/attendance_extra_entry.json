@@ -16,6 +16,7 @@
   {
    "fieldname": "employee",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Employee",
    "options": "Employee"
@@ -35,11 +36,13 @@
   {
    "fieldname": "hours",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Hours"
   },
   {
    "fieldname": "date",
    "fieldtype": "Date",
+   "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Date"
   },
@@ -58,7 +61,7 @@
    "permlevel": 2
   }
  ],
- "modified": "2020-11-26 21:27:16.121835",
+ "modified": "2020-12-02 23:04:01.153179",
  "modified_by": "Administrator",
  "module": "Hr Policies",
  "name": "Attendance Extra Entry",
