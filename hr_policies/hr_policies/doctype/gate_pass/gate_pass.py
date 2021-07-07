@@ -13,17 +13,22 @@ class GatePass(Document):
 	def validate(self):
 		gp = frappe.db.sql("""select count(name) from `tabGate Pass` where MONTH(date) = MONTH(%s) AND YEAR(date) = YEAR(%s) and type = "Personal" 
 			and docstatus = 1 and employee = %s;""",(self.date,self.date,self.employee),as_list = True)
-
+		self.lop = 0
+		#	lop only true if one of below condition true
+		#	in both case we allow to create gate pass but in case of not follow any of following condition we will deduct salary
+		#	Discusd with taiyab khan 
+		# 	change by Jigar Tarpara
 		if self.type == "Personal" and self.apply_for > frappe.db.get_single_value("Gate Pass Policies", "personal_gate_pass_allowance_time"):
-			frappe.throw(_("You are not allow for gate pass more then  {0} Minutes").format(frappe.db.get_single_value("Gate Pass Policies", "personal_gate_pass_allowance_time")))
+			self.lop = 1
+			frappe.msgprint(_("You crossed your gate pass allowance limit more then {0} Minutes").format(frappe.db.get_single_value("Gate Pass Policies", "personal_gate_pass_allowance_time")))
 
 		if self.type == "Personal" and int(gp[0][0]) >= int(frappe.db.get_single_value("Gate Pass Policies", "no_of_gate_pass_allowed_for_personal_work")):
 			self.lop = 1
-			frappe.msgprint("You crossed your gate pass allowance limit per month, this gate pass may result in deduction in salary")
-
-		else:
-			self.lop = 0
-
+			frappe.msgprint("You crossed your gate pass allowance limit per month, this gate pass may result in deduction in salary")			
+		# In Case of Employee is "Is Labour" True Then LOP must 1 as labour will charge for any exit in shift
+		is_labour = frappe.db.get_value("Employee", self.employee,"is_labour")
+		if is_labour:
+			self.lop = 1
 
 @frappe.whitelist()
 def getPLS():

@@ -28,9 +28,9 @@ app_license = "MIT"
 # include js in doctype views
 
 doctype_js = {
-	"Employee Advance" : "public/js/employee_advance.js",
-	"Employee" : "public/js/employee.js",
-	"Loan Application" : "public/js/loan_application.js"
+    "Employee Advance": "public/js/employee_advance.js",
+    "Employee": "public/js/employee.js",
+    "Loan Application": "public/js/loan_application.js"
 }
 
 
@@ -87,91 +87,91 @@ doctype_js = {
 # Hook on document methods and events
 
 doc_events = {
-	"Loan Application": {
-		"validate": "hr_policies.custom_validate.validate_guarantor"
-	},
-	"Employee": {
-		"on_change": "hr_policies.hr_policies.doctype.referral_bonus_application.referral_bonus_application.updateADS",
-		"validate":"hr_policies.custom_validate.check_guarantor_in_loan"
-	},
-	"Employee Advance": {
-		"validate": "hr_policies.custom_validate.validate_loan_amount_for_advance",
-		"on_submit":"hr_policies.custom_validate.add_additional_salary",
-		"on_cancel":"hr_policies.custom_validate.cancel_advance_salary"
-	},
-	"Attendance Log":{
-		"before_insert":"hr_policies.attendance_integration.update_attendance_log"
-	},
-	"Attendance":{
-		"on_submit":"hr_policies.attendance_integration.add_late_entry",
-		"before_submit":"hr_policies.process_attendance.process_sandwich_leave"
-	}
+    "Loan Application": {
+        "validate": "hr_policies.custom_validate.validate_guarantor"
+    },
+    "Employee": {
+        "on_change": "hr_policies.hr_policies.doctype.referral_bonus_application.referral_bonus_application.updateADS",
+        "validate": "hr_policies.custom_validate.check_guarantor_in_loan"
+    },
+    "Employee Advance": {
+        "validate": "hr_policies.custom_validate.validate_loan_amount_for_advance",
+        "on_submit": "hr_policies.custom_validate.add_additional_salary",
+        "on_cancel": "hr_policies.custom_validate.cancel_advance_salary"
+    },
+    "Attendance Log": {
+        "before_insert": "hr_policies.attendance_integration.update_attendance_log"
+    },
+    "Attendance": {
+        "on_submit": "hr_policies.attendance_integration.add_late_entry",
+        "before_submit": "hr_policies.process_attendance.process_sandwich_leave"
+    }
 }
 
 fixtures = [
-	{
-	"doctype": "Role",
-	"filters": [
+    {
+        "doctype": "Role",
+        "filters": [
             [
-		"name",
-		"in",
-		[
-			 "HR Master Manager"
-	    ]
-	]
-	]
-	},
-	{
+                "name",
+                "in",
+                [
+                    "HR Master Manager"
+                ]
+            ]
+        ]
+    },
+    {
         "doctype": "Custom Field",
         "filters": [
             [
                 "name",
                 "in",
                 [
-			"Gate Pass-workflow_state",
-			"Loan Application-workflow_state",
-			"Loan Application-gross_salary",
-			"Loan Application-loan_guarantor",
-			"Loan Application-guarantor_details",
-			"Loan Application-eligible_amount",
-			"Loan Application-section_break_1",
-			"Loan Application-policies",
-			"Employee-reference_of_employee_",
-			"Additional Salary-bonus_for_employee",
-			"Employee Advance-eligible_advance_amount_",
-			"Employee Advance-additional_salary_id",
-			"Employee Advance-extra_approval_require",
-			"Employee Advance-emi_amount",
-			"Employee Advance-remain_amount_eligible",
-			"Employee-is_labour",
-			"Employee-is_employee",
-			"Employee-card_no",
-			"Employee-has_rm",
-			"Gate Pass-has_rm",
-			"Employee Advance-has_rm",
-			"Overtime Application-has_rm",
-			"Miss Punch Application-has_rm",
-			"Loan-has_rm",
-			"Employee-has_rm",
-			"Loan-department",
-			"Loan-employee_name",
-			"Loan-employee",
-			"Loan Application-department",
-			"Loan Application-employee_name",
-			"Loan Application-employee",
-			"Miss Punch Application-department",
-			"Attendance-in_time",
-			"Attendance-out_time",
-			"Attendance-miss_punch",
-			"Attendance-overtime",
-			"Attendance-office_hours",
-			"Attendance Extra Entry-calculated",
-			"Shift Type-shift_type",
-			"Shift Type-section_break_1",
-			"Shift Assignment-shift_time_type"
-		]
-	   ]
-	]
+                    "Gate Pass-workflow_state",
+                    "Loan Application-workflow_state",
+                    "Loan Application-gross_salary",
+                    "Loan Application-loan_guarantor",
+                    "Loan Application-guarantor_details",
+                    "Loan Application-eligible_amount",
+                    "Loan Application-section_break_1",
+                    "Loan Application-policies",
+                    "Employee-reference_of_employee_",
+                    "Additional Salary-bonus_for_employee",
+                    "Employee Advance-eligible_advance_amount_",
+                    "Employee Advance-additional_salary_id",
+                    "Employee Advance-extra_approval_require",
+                    "Employee Advance-emi_amount",
+                    "Employee Advance-remain_amount_eligible",
+                    "Employee-is_labour",
+                    "Employee-is_employee",
+                    "Employee-card_no",
+                    "Employee-has_rm",
+                    "Gate Pass-has_rm",
+                    "Employee Advance-has_rm",
+                    "Overtime Application-has_rm",
+                    "Miss Punch Application-has_rm",
+                    "Loan-has_rm",
+                    "Employee-has_rm",
+                    "Loan-department",
+                    "Loan-employee_name",
+                    "Loan-employee",
+                    "Loan Application-department",
+                    "Loan Application-employee_name",
+                    "Loan Application-employee",
+                    "Miss Punch Application-department",
+                    "Attendance-in_time",
+                    "Attendance-out_time",
+                    "Attendance-miss_punch",
+                    "Attendance-overtime",
+                    "Attendance-office_hours",
+                    "Attendance Extra Entry-calculated",
+                    "Shift Type-shift_type",
+                    "Shift Type-section_break_1",
+                    "Shift Assignment-shift_time_type"
+                ]
+            ]
+        ]
     }
 ]
 
@@ -180,29 +180,29 @@ fixtures = [
 # ---------------
 
 scheduler_events = {
-	"cron": {
-		"30 23 1 * *": [
-			"hr_policies.hr_policies.doctype.gate_pass.gate_pass.insertGP",
-			"hr_policies.hr_policies.doctype.gate_pass.gate_pass.insertOT",
-			"hr_policies.attendance_integration.add_late_entry_deduction",
-			"hr_policies.custom_validate.add_holiday_earning",
-		],
-		"0 9 * * *":[
-			"hr_policies.attendance_integration.process_attendance"
-		],
-		"0 18 * * *":[
-                        "hr_policies.attendance_integration.process_attendance_night_shift"
-                ],
-		"30 23 * * Sun":[
-			"hr_policies.process_attendance.process_sandwich_leave_weekly"
-		],
-		"0 22 * * *":[
-                        "hr_policies.custom_validate.changeDayShift"
-                ],
-		"0 13 * * *":[
-                        "hr_policies.custom_validate.changeNightShift"
-                ]
-	}
+    "cron": {
+        "30 23 1 * *": [
+            "hr_policies.hr_policies.doctype.gate_pass.gate_pass.insertGP",
+            "hr_policies.hr_policies.doctype.gate_pass.gate_pass.insertOT",
+            "hr_policies.attendance_integration.add_late_entry_deduction",
+            "hr_policies.custom_validate.add_holiday_earning",
+        ],
+        "0 9 * * *": [
+            "hr_policies.attendance_integration.process_attendance"
+        ],
+        "0 18 * * *": [
+            "hr_policies.attendance_integration.process_attendance_night_shift"
+        ],
+        "30 23 * * Sun": [
+            "hr_policies.process_attendance.process_sandwich_leave_weekly"
+        ],
+        # "0 22 * * *":[
+        #                 "hr_policies.custom_validate.changeDayShift"
+        #         ],
+        # "0 13 * * *":[
+        #                 "hr_policies.custom_validate.changeNightShift"
+        #         ]
+    }
 
 }
 
@@ -224,4 +224,3 @@ scheduler_events = {
 # override_doctype_dashboards = {
 # 	"Task": "hr_policies.task.get_dashboard_data"
 # }
-

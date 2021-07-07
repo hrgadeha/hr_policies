@@ -4,9 +4,9 @@
 
 
 frappe.ui.form.on('Miss Punch Application', {
-	// refresh: function(frm) {
+    // refresh: function(frm) {
 
-	// }
+    // }
 });
 
 frappe.ui.form.on("Miss Punch Application", {
@@ -36,27 +36,26 @@ callback:function(r){
 
 
 frappe.ui.form.on("Miss Punch Application", {
-  "miss_punch_date": function(frm) {
-	if(frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch"){
-    frappe.call({
-    "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getlapp",
-args: {
-employee: frm.doc.employee,
-attendance_date: frm.doc.miss_punch_date
-},
-callback:function(r){
-	var len=r.message.length;
-	    if(!r.message){
-	        frm.set_value("leave_application","");
-	        frappe.throw("No Miss Punch Found On Selected Date, Please Select Valid Date");
-	    }
-	    else{
-	        frm.set_value("leave_application",r.message[0][0]);
-	    }
-	}
-    });
-}
-}
+    "miss_punch_date": function(frm) {
+        if (frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch") {
+            frappe.call({
+                "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getlapp",
+                args: {
+                    employee: frm.doc.employee,
+                    attendance_date: frm.doc.miss_punch_date
+                },
+                callback: function(r) {
+                    var len = r.message.length;
+                    if (!r.message) {
+                        frm.set_value("leave_application", "");
+                        frappe.throw("No Miss Punch Found On Selected Date, Please Select Valid Date");
+                    } else {
+                        frm.set_value("leave_application", r.message[0][0]);
+                    }
+                }
+            });
+        }
+    }
 });
 
 frappe.ui.form.on("Miss Punch Application", {
@@ -86,27 +85,26 @@ callback:function(r){
 
 
 frappe.ui.form.on("Miss Punch Application", {
-  "employee": function(frm) {
-	if(frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch"){
-    frappe.call({
-    "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getlapp",
-args: {
-employee: frm.doc.employee,
-attendance_date: frm.doc.miss_punch_date
-},
-callback:function(r){
-	var len=r.message.length;
-	    if(!r.message){
-	        frm.set_value("leave_application","");
-	        frappe.throw("No Miss Punch Found On Selected Date, Please Select Valid Date");
-	    }
-	    else{
-	        frm.set_value("leave_application",r.message[0][0]);
-	    }
-	}
-    });
-}
-}
+    "employee": function(frm) {
+        if (frm.doc.miss_punch_date && frm.doc.employee && frm.doc.application_type == "Miss Punch") {
+            frappe.call({
+                "method": "hr_policies.hr_policies.doctype.miss_punch_application.miss_punch_application.getlapp",
+                args: {
+                    employee: frm.doc.employee,
+                    attendance_date: frm.doc.miss_punch_date
+                },
+                callback: function(r) {
+                    var len = r.message.length;
+                    if (!r.message) {
+                        frm.set_value("leave_application", "");
+                        frappe.throw("No Miss Punch Found On Selected Date, Please Select Valid Date");
+                    } else {
+                        frm.set_value("leave_application", r.message[0][0]);
+                    }
+                }
+            });
+        }
+    }
 });
 
 
@@ -233,38 +231,36 @@ callback:function(r){
             frm.set_df_property('last_punch_time',  'read_only', 1);
             frm.set_df_property('exit_time',  'read_only', 0);
         }
-    });
-}
-}
+    }
 });
 
 
 frappe.ui.form.on("Miss Punch Application", {
-  "application_type": function(frm) {
-        if(frm.doc.application_type == "Machine Off"){
-            frm.set_df_property('last_punch_time',  'read_only', 0);
-            frm.set_df_property('exit_time',  'read_only', 0);
-            frm.set_df_property('punch_type',  'reqd', 0);
+    "application_type": function(frm) {
+        if (frm.doc.application_type == "Machine Off") {
+            frm.set_df_property('last_punch_time', 'read_only', 0);
+            frm.set_df_property('exit_time', 'read_only', 0);
+            frm.set_df_property('punch_type', 'reqd', 0);
         }
-        if(frm.doc.application_type == "Miss Punch"){
-            frm.set_df_property('last_punch_time',  'read_only', 1);
-            frm.set_df_property('exit_time',  'read_only', 1);
-            frm.set_df_property('punch_type',  'reqd', 1);
+        if (frm.doc.application_type == "Miss Punch") {
+            frm.set_df_property('last_punch_time', 'read_only', 1);
+            frm.set_df_property('exit_time', 'read_only', 1);
+            frm.set_df_property('punch_type', 'reqd', 1);
         }
-}
+    }
 });
 
 frappe.ui.form.on("Miss Punch Application", {
-  "refresh": function(frm) {
-        if(frm.doc.application_type == "Machine Off"){
-            frm.set_df_property('last_punch_time',  'read_only', 0);
-            frm.set_df_property('exit_time',  'read_only', 0);
-            frm.set_df_property('punch_type',  'reqd', 0);
+    "refresh": function(frm) {
+        if (frm.doc.application_type == "Machine Off") {
+            frm.set_df_property('last_punch_time', 'read_only', 0);
+            frm.set_df_property('exit_time', 'read_only', 0);
+            frm.set_df_property('punch_type', 'reqd', 0);
         }
-        if(frm.doc.application_type == "Miss Punch"){
-            frm.set_df_property('last_punch_time',  'read_only', 1);
-            frm.set_df_property('exit_time',  'read_only', 1);
-            frm.set_df_property('punch_type',  'reqd', 1);
+        if (frm.doc.application_type == "Miss Punch") {
+            frm.set_df_property('last_punch_time', 'read_only', 1);
+            frm.set_df_property('exit_time', 'read_only', 1);
+            frm.set_df_property('punch_type', 'reqd', 1);
         }
 }
 });
